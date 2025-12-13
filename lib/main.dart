@@ -1,11 +1,11 @@
-
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_justplay/features/auth/screens/create_account_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'core/init/app_initializer.dart';
 import 'core/theme/app_theme.dart';
+import 'features/routing/router.dart';
+// Your GoRouter file
 
 void main() async {
   await AppInitializer.initializeApp();
@@ -17,11 +17,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return GetMaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Just Play',
       theme: AppTheme.light,
-      home: CreateAccountScreen(),
+
+      // Pass the GoRouter parts individually
+      routeInformationProvider: router.routeInformationProvider,
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+
+      // Optional: back button dispatcher for proper Android back handling
+      backButtonDispatcher: router.backButtonDispatcher,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_justplay/core/common/widgets/button_widgets.dart';
 import 'package:flutter_justplay/features/home/screens/booking_screen.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/common/widgets/app_scaffold.dart';
 
@@ -24,7 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Text('Hello "userName"', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 35),),
         SizedBox(height: 49,),
-        Container(height:70,child: SecondaryButton(text: 'Make New Booking',onSimplePressed: (){Get.to(() => BookingScreen());},)),
+        Container(height:70,child: SecondaryButton(text: 'Make New Booking',onSimplePressed: (){
+          // Navigate to the nested booking flow inside Home tab
+          context.push('/home/booking');},)),
         SizedBox(height: 20,),
         Padding(
           padding: const EdgeInsets.only(bottom: 50),
