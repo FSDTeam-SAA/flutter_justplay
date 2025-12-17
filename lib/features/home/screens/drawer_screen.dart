@@ -1,20 +1,35 @@
 // screens/menu_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_justplay/features/auth/controller/auth_controller.dart';
 import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
-import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
-import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
+import 'package:flutter_justplay/features/home/controller/profile_controller.dart';
 import 'package:flutter_justplay/features/home/screens/profile_screen.dart';
-import 'package:flutter_justplay/features/home/screens/terms_and_conditions_screen.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/assets_const.dart' hide Icons;
 import '../../../core/utils/app_svg.dart';
 
-class MenuScreen extends StatelessWidget {
-  final String username;
+class MenuScreen extends StatefulWidget {
 
-  const MenuScreen({Key? key, required this.username}) : super(key: key);
+
+  const MenuScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  final ProfileController _profileController = Get.find<ProfileController>();
+  final AuthController _authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final userName = _profileController.userInfo.value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +93,15 @@ class MenuScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            Text('Hello (username)', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),),
+            // Observe userInfo reactively
+            Obx(() {
+              final userInfo = _profileController.userInfo.value;
+              final userName = userInfo?.user.name;
+              return Text(
+                'Hello $userName',
+                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+              );
+            }),
             SizedBox(height: 32,),
 
             _menuItem("Bookings", () {
@@ -86,13 +109,17 @@ class MenuScreen extends StatelessWidget {
               // Navigate to bookings
             }),
             _menuItem("Change City", () {
-              Get.to(() => ChangeCityScreen());
+              Navigator.of(context).pop();
+              context.go('/utility/change_city');
             }),
             _menuItem("Terms & Conditions", () {
-              Get.to(() => TermsAndConditionsScreen());
+              Navigator.of(context).pop(); // Close menu
+              context.go('/utility/terms_condition');
             }),
+
             _menuItem("Report an Issue", () {
-              Get.to(() => ReportAnIssue());
+              Navigator.of(context).pop();
+              context.go('/utility/report_issue');
             }),
 
             const Spacer(),
@@ -102,8 +129,7 @@ class MenuScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 50),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
-                  // Handle logout
+                  _authController.logout();
                 },
                 child: Container(
                   height: 92,

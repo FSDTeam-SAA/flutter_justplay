@@ -10,12 +10,12 @@ class ChangeCityScreen extends StatelessWidget {
 
   // Reuse city container with GetX reactivity
   Widget _cityContainer(
-    String asset,
-    String cityName,
-    ChangeCityController controller,
-  ) {
+      String asset,
+      String cityName,
+      ChangeCityController controller,
+      ) {
     return Obx(
-      () => GestureDetector(
+          () => GestureDetector(
         onTap: () => controller.selectCity(cityName),
         child: Container(
           height: 173,
@@ -29,11 +29,34 @@ class ChangeCityScreen extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(50),
-            child: Image.asset(
-              asset,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  asset,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                Center(
+                  child: Text(
+                    cityName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22.4,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(2, 2),
+                          blurRadius: 8,
+                          color: Colors.black87,
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -78,29 +101,22 @@ class ChangeCityScreen extends StatelessWidget {
           ),
 
           // Confirm Button at bottom
-          // Confirm Button at bottom
           Positioned(
             bottom: 30,
-            left: 0, // better than 0 for safe area on some devices
+            left: 0,
             right: 0,
             child: Obx(
-              () => ElevatedButton(
+                  () => ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
-                  // enabled state
                   disabledBackgroundColor: const Color(0x99242331),
-                  // #242331 at 60% opacity
                   foregroundColor: Colors.white,
                   disabledForegroundColor: Colors.white.withOpacity(0.6),
-                  // optional: slightly faded text when disabled
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(28),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  minimumSize: const Size(
-                    double.infinity,
-                    56,
-                  ), // ensures full width
+                  minimumSize: const Size(double.infinity, 56),
                 ),
                 onPressed: controller.selectedCity.value == null
                     ? null

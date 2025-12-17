@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/core/common/widgets/button_widgets.dart';
+import 'package:flutter_justplay/features/home/controller/profile_controller.dart';
 import 'package:flutter_justplay/features/home/screens/booking_screen.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -14,16 +15,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ProfileController _profileController =Get.find<ProfileController>();
+
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(
-        
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('Hello "userName"', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 35),),
+        Obx(() {
+          final userInfo = _profileController.userInfo.value;
+          final userName = userInfo?.user.name;
+          return Text(
+            'Hello $userName',
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+          );
+        }),
         SizedBox(height: 49,),
         Container(height:70,child: SecondaryButton(text: 'Make New Booking',onSimplePressed: (){
           // Navigate to the nested booking flow inside Home tab

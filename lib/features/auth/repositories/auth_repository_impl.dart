@@ -1,6 +1,12 @@
 import 'dart:convert';
 
 import '../../../core/network/api_client.dart';
+import '../../../core/network/constants/api_constants.dart';
+import '../../../core/network/network_result.dart';
+import '../models/request/login_request_model.dart';
+import '../models/request/register_request_model.dart';
+import '../models/response/login_response_model.dart';
+import '../models/response/register_response_model.dart';
 import 'auth_repository.dart';
 
 
@@ -9,23 +15,23 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  // @override
-  // NetworkResult<RegisterResponseModel> register(RegisterRequestModel request) {
-  //   return _apiClient.post(
-  //     endpoint: ApiConstants.auth.register,
-  //     data: request.toJson(),
-  //     fromJsonT: (json) => RegisterResponseModel.fromJson(json),
-  //   );
-  // }
+  @override
+  NetworkResult<RegisterResponseModel> register(RegisterRequestModel request){
+    return _apiClient.post(
+      endpoint: ApiConstants.auth.register,
+      data: request.toJson(),
+      fromJsonT: (json) => RegisterResponseModel.fromJson(json),
+    );
+  }
   //
-  // @override
-  // NetworkResult<LoginResponseModel> login(LoginRequestModel request) {
-  //   return _apiClient.post(
-  //     endpoint: ApiConstants.auth.login,
-  //     data: request.toJson(),
-  //     fromJsonT: (json) => LoginResponseModel.fromJson(json),
-  //   );
-  // }
+  @override
+  NetworkResult<LoginResponseModel> login(LoginRequestModel request) {
+    return _apiClient.post(
+      endpoint: ApiConstants.auth.login,
+      data: request.toJson(),
+      fromJsonT: (json) => LoginResponseModel.fromJson(json),
+    );
+  }
   //
   // @override
   // NetworkResult<ForgotPasswordResponseModel> forgotPassword(

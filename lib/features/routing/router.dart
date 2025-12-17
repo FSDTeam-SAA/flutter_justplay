@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
+import 'package:flutter_justplay/features/home/screens/booking_confirmed_screen.dart';
+import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
+import 'package:flutter_justplay/features/home/screens/terms_and_conditions_screen.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,24 +10,13 @@ import 'package:flutter_justplay/features/home/screens/home_screen.dart';
 import 'package:flutter_justplay/features/home/screens/booking_screen.dart';
 import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
 import 'package:flutter_justplay/features/events/screens/events_screen.dart';
-
 import 'package:flutter_justplay/features/auth/screens/create_account_screen.dart';
-import 'package:flutter_justplay/features/auth/screens/login_screen.dart'; // You'll need to create this
+import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
 import 'navigation_menu_shell.dart';
 
 final GoRouter router = GoRouter(
   navigatorKey: Get.key,
   initialLocation: '/create-account',
-
-  // Optional: Add redirect logic later for authenticated users
-  // redirect: (context, state) {
-  //   final isLoggedIn = AuthController.instance.isLoggedIn;
-  //   if (isLoggedIn && state.uri.toString().startsWith('/create-account') || state.uri.toString() == '/login') {
-  //     return '/home';
-  //   }
-  //   return null;
-  // },
-
   routes: [
     // Full-screen auth routes (NO bottom navigation)
     GoRoute(
@@ -32,7 +25,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const CreateAccountScreen(),
       routes: [
         GoRoute(
-          path: 'login', // So you can navigate to /create-account/login
+          path: 'login',
           name: 'login',
           builder: (context, state) => const LoginScreen(),
         ),
@@ -45,7 +38,7 @@ final GoRouter router = GoRouter(
         return NavigationMenuShell(navigationShell: navigationShell);
       },
       branches: [
-        // Branch 0: Home + Nested Booking Flow
+        // Branch 0: Home
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -57,14 +50,18 @@ final GoRouter router = GoRouter(
                   path: 'booking',
                   name: 'booking-flow',
                   builder: (context, state) => const BookingScreen(),
-                  // Add more nested routes later: sport, pitches, time, etc.
+                ),
+                GoRoute(
+                  path: 'booking_confirm',
+                  name: 'booking_confirm',
+                  builder: (context, state) => const BookingConfirmedScreen(),
                 ),
               ],
             ),
           ],
         ),
 
-        // Branch 1: Bookings Tab
+        // Branch 1: Bookings
         StatefulShellBranch(
           routes: [
             GoRoute(
@@ -75,13 +72,43 @@ final GoRouter router = GoRouter(
           ],
         ),
 
-        // Branch 2: Events Tab
+        // Branch 2: Events
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/events',
               name: 'events',
               builder: (context, state) => const EventsScreen(),
+            ),
+          ],
+        ),
+
+        // NEW Branch 3: Utility (no tab selected)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/utility',
+              name: 'utility',
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: SizedBox.shrink(), // Empty placeholder
+              ),
+              routes: [
+                GoRoute(
+                  path: 'change_city',  // ← change from 'terms' to 'terms_condition'
+                  name: 'change_city',
+                  builder: (context, state) => const ChangeCityScreen(),
+                ),
+                GoRoute(
+                  path: 'terms_condition',  // ← change from 'terms' to 'terms_condition'
+                  name: 'terms_condition',
+                  builder: (context, state) => const TermsAndConditionsScreen(),
+                ),
+                GoRoute(
+                  path: 'report_issue',
+                  name: 'report_issue',
+                  builder: (context, state) => const ReportAnIssue(),
+                ),
+              ],
             ),
           ],
         ),

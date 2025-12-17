@@ -72,7 +72,7 @@ class AppScaffold extends StatelessWidget {
         builder: (context) => IconButton(
           icon: const Icon(Icons.menu, color: Colors.black,size: 30,), // You can replace with AppSvg if you want logo
           onPressed: () {
-            Get.to(() => MenuScreen(username: 'username'));
+            Get.to(() => MenuScreen());
           },
           tooltip: 'Menu',
         ),

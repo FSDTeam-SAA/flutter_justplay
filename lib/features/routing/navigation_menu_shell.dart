@@ -12,7 +12,12 @@ class NavigationMenuShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int currentIndex = navigationShell.currentIndex;
+    // Get real index
+    final int rawIndex = navigationShell.currentIndex;
+
+    // Only highlight if index is 0, 1, or 2 (Home, Bookings, Events)
+    // If index == 3 (utility), we show NO selection
+    final int displayIndex = rawIndex < 3 ? rawIndex : -1; // -1 means no tab selected
 
     final List<Map<String, dynamic>> items = [
       {
@@ -33,7 +38,7 @@ class NavigationMenuShell extends StatelessWidget {
     ];
 
     return Scaffold(
-      body: navigationShell, // This shows the current branch (tab) content + nested routes
+      body: navigationShell,
 
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(bottom: 22, top: 14),
@@ -42,21 +47,19 @@ class NavigationMenuShell extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(items.length, (index) {
             final item = items[index];
-            final bool isSelected = currentIndex == index;
+            final bool isSelected = displayIndex == index; // Only true for 0,1,2
 
             return GestureDetector(
               onTap: () {
-                // Switch tab while preserving state
+                // Always go to real branch 0,1,2 when user taps
                 navigationShell.goBranch(
                   index,
-                  // Prevents unnecessary reload if already on this branch
-                  initialLocation: navigationShell.currentIndex == index,
+                  initialLocation: rawIndex == index,
                 );
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Circular Icon
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
                     height: 55,
@@ -75,7 +78,6 @@ class NavigationMenuShell extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Label
                   Text(
                     item['label'],
                     style: TextStyle(

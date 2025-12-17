@@ -1,108 +1,75 @@
 
+import 'package:flutter_justplay/features/auth/models/request/register_request_model.dart';
+import 'package:flutter_justplay/features/home/screens/home_screen.dart';
 import 'package:flutx_core/core/debug_print.dart';
 
 import 'package:get/get.dart';
 import '../../../core/base/base_controller.dart';
+import '../../../core/network/constants/key_constants.dart';
 import '../../../core/network/services/auth_storage_service.dart';
 import '../../../core/network/services/secure_store_services.dart';
 
+import '../models/request/login_request_model.dart';
 import '../repositories/auth_repository.dart';
 import '../screens/login_screen.dart';
 
 class AuthController extends BaseController {
   final _authRepo = Get.find<AuthRepository>();
-  bool _isSuccess = false;
+
 
   final AuthStorageService _authStorageService = AuthStorageService();
 
-  //
-  // AuthController(this._authRepo, this._authStorageService);
 
-  // Future<void> register(String name, String email, String password) async {
-  //   final request = RegisterRequestModel(
-  //     name: name,
-  //     email: email,
-  //     password: password,
-  //   );
+  Future<void> register(String name, String phone) async {
+    final request = RegisterRequestModel(
+      name: name, phone: phone,
+    );
+
+    final result = await _authRepo.register(request);
+
+    result.fold(
+      (fail) {
+        setError(fail.message);
+        DPrint.log("Register success result : ${fail.message}");
+        setLoading(false);
+      },
+      (success) {
+        DPrint.log("Register success result : ${success.data.id}");
+        Get.to(LoginScreen());
+        setLoading(false);
+      },
+    );
+  }
+
   //
-  //   final result = await _authRepo.register(request);
-  //
-  //   result.fold(
-  //     (fail) {
-  //       setError(fail.message);
-  //       DPrint.log("Register success result : ${fail.message}");
-  //       setLoading(false);
-  //     },
-  //     (success) {
-  //       DPrint.log("Register success result : ${success.data.id}");
-  //       Get.to(FirstScreen());
-  //       setLoading(false);
-  //     },
-  //   );
-  // }
-  //
-  // // Future verifyOTPRegister(String email, String otp) async {
-  // //   setLoading(true);
-  // //   setError("");
-  // //
-  // //   final request = OtpRequestModelRegister(email: email, otp: otp);
-  // //   final result = await _authRepository.otpVerifyRegister(request);
-  // //
-  // //   result.fold(
-  // //         (fail) {
-  // //       setError(fail.message);
-  // //       DPrint.log("verify otp success result : ${fail.message}");
-  // //       setLoading(false);
-  // //     },
-  // //         (success) {
-  // //       DPrint.log("verify otp success result : ${success.data.message}");
-  // //       Get.to(EnterScreen());
-  // //       setLoading(false);
-  // //     },
-  // //   );
-  // // }
-  //
-  // // Login
-  //
-  // Future<void> login(
-  //     RememberMeController? rememberMeController, {
-  //       required String email,
-  //       required String password,
-  //     }) async {
-  //   final request = LoginRequestModel(email: email, password: password);
-  //
-  //   final result = await _authRepo.login(request);
-  //
-  //   DPrint.log("Login Response ${result.isRight()}");
-  //
-  //   result.fold(
-  //         (fail) {
-  //       setError(fail.message);
-  //       setLoading(false);
-  //     },
-  //         (success) async {
-  //       // Extract user data
-  //       final user = success.data.user;
-  //
-  //       // Store access token and refresh token for ANY user
-  //       await _authStorageService.storeAuthData(
-  //         accessToken: success.data.accessToken,
-  //         refreshToken: success.data.refreshToken,
-  //         userId: user.id,
-  //       );
-  //
-  //       // If Remember Me is ON → save email + password
-  //       if (rememberMeController?.rememberMe.value == true) {
-  //         final secureStore = SecureStoreServices();
-  //         secureStore.storeData('email', email);
-  //         secureStore.storeData('password', password);
-  //       }
-  //
-  //       // Navigate to home screen
-  //       Get.to(() => NavigationMenu());
-  //     },
-  //   );
-  // }
+  Future<void> login(String name, String phone) async {
+    final request = LoginRequestModel(name: name, phone: phone);
+
+    final result = await _authRepo.login(request);
+
+    DPrint.log("Login Response ${result.isRight()}");
+
+    result.fold(
+          (fail) {
+        setError(fail.message);
+        setLoading(false);
+      },
+          (success) async {
+        // Extract user data
+        final user = success.data.user;
+
+        // Store access token and refresh token for ANY user
+        await _authStorageService.storeAuthData(
+          accessToken: success.data.accessToken,
+          refreshToken: success.data.refreshToken,
+          userId: user.id,
+        );
+
+        // Navigate to home screen
+        Get.to(() => HomeScreen());
+      },
+    );
+  }
   //
   //
   // //
@@ -191,11 +158,11 @@ class AuthController extends BaseController {
   //   );
   //   return navi;
   // }
-  // final SecureStoreServices _secureStoreServices = SecureStoreServices();
-  // //
-  // Future<void> logout() async {
-  //   await _authStorageService.clearAuthData();
-  //   await _secureStoreServices.deleteData(KeyConstants.conversationId);
-  //   Get.offAll(() => FirstScreen());
-  // }
+  final SecureStoreServices _secureStoreServices = SecureStoreServices();
+
+  Future<void> logout() async {
+    await _authStorageService.clearAuthData();
+    await _secureStoreServices.deleteData(KeyConstants.conversationId);
+    Get.offAll(() => LoginScreen());
+  }
 }
