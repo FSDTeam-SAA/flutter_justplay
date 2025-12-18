@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_justplay/features/home/screens/home_screen.dart';
 import 'package:flutter_justplay/features/home/screens/select_city_screen.dart';
 import 'package:flutter_justplay/features/home/screens/booking_screen.dart'; // If you have more steps later
-import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
+import 'package:flutter_justplay/features/bookings/presentation/screens/my_booking_screen.dart';
 import 'package:flutter_justplay/features/events/screens/events_screen.dart';
 
 import '../auth/screens/create_account_screen.dart';
