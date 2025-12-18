@@ -1,7 +1,7 @@
 // screens/menu_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
+import 'package:flutter_justplay/features/bookings/presentation/screens/my_booking_screen.dart';
 import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
 import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
 import 'package:flutter_justplay/features/home/screens/profile_screen.dart';
