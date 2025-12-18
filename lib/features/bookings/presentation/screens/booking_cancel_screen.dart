@@ -29,7 +29,7 @@ class BookingCancelledScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
               Text(
                 'The venue has been notified',
@@ -42,29 +42,30 @@ class BookingCancelledScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
 
               RoundedButton(
                 text: 'Back To Bookings',
-                backgroundColor: Colors.black,
-                textColor: Colors.white,
+                backgroundColor: Color(0xFF242331),
+                textColor: Color(0xFFFFFFFF),
+
                 height: 56,
                 width: Get.width * 0.8,
-                borderRadius: 40,
+                borderRadius: 100,
                 onPressed: () => Get.back(),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 6.95),
 
               RoundedButton(
                 text: 'Make New Booking',
                 backgroundColor: Colors.transparent,
-                textColor: Colors.black,
-                borderColor: Colors.black, // ← border added
-                borderWidth: 1.4,
+                textColor: Color(0xFF000000),
+                borderColor: Color(0xFF000000), // ← border added
+                borderWidth: 1,
                 height: 56,
                 width: Get.width * 0.8,
-                borderRadius: 40,
+                borderRadius: 100,
                 onPressed: () {},
               ),
             ],
