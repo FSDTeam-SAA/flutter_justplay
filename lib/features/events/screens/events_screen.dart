@@ -50,9 +50,9 @@ class _ComingSoonView extends StatelessWidget {
           Text(
             'Coming Soon!',
             style: TextStyle(
-              fontSize: 48,
+              fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -179,7 +179,18 @@ class _EventCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               formattedDate,
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 20, color: Colors.white,shadows: [
+                Shadow(
+                  offset: Offset(2, 2),
+                  blurRadius: 4,
+                  color: Colors.black54,
+                ),
+                Shadow(
+                  offset: Offset(-1, -1),
+                  blurRadius: 4,
+                  color: Colors.black45,
+                ),
+              ],),
             ),
             const SizedBox(height: 8),
             // Text(

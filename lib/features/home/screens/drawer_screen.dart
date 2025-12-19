@@ -129,7 +129,7 @@ class _MenuScreenState extends State<MenuScreen> {
               padding: const EdgeInsets.only(bottom: 50),
               child: GestureDetector(
                 onTap: () {
-                  _authController.logout();
+                  _authController.logout(context);
                 },
                 child: Container(
                   height: 92,

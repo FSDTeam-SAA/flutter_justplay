@@ -2,20 +2,16 @@
 import 'package:get/get.dart';
 
 class ChangeCityController extends GetxController {
-  // Reactive selected city (null means nothing selected)
-  var selectedCity = Rxn<String>(); // Rxn<String> allows nullability + reactivity
+  // Only track the selected city name (or id if you prefer)
+  var selectedCity = ''.obs; // or RxString()
 
   void selectCity(String cityName) {
     selectedCity.value = cityName;
   }
 
   void confirmAndClose() {
-    if (selectedCity.value != null) {
-      Get.back(result: selectedCity.value);
+    Get.back(result: selectedCity.value);
     }
-  }
 
-  void clear() {
-    selectedCity.value = null;
-  }
+
 }

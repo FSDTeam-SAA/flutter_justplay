@@ -9,8 +9,8 @@ import '../../features/auth/controller/auth_controller.dart';
 import '../utils/getx_helper.dart';
 
 void setupControllers() {
-  Get.getOrPut(() => AuthController());
-  Get.getOrPut(() => ProfileController());
-  Get.getOrPut(() => HomeController());
-  Get.getOrPut(() => EventController());
+  Get.getOrPut(() => AuthController(), fenix: true);
+  Get.getOrPut(() => ProfileController(), fenix: true);
+  Get.getOrPut(() => HomeController(), fenix: true);
+  Get.getOrPut(() => EventController(), fenix: true);
 }

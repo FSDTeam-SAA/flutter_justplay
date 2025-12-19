@@ -40,7 +40,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     if(userInfo != null){
       _nameTEController.text = userInfo.user.name;
       _phonenumberTEController.text = userInfo.user.phone;
-      _cityTEController.text = userInfo.user.city;
+      _cityTEController.text = userInfo.user.city!;
     }
   }
 

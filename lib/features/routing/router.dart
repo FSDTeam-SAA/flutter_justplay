@@ -14,9 +14,15 @@ import 'package:flutter_justplay/features/auth/screens/create_account_screen.dar
 import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
 import 'navigation_menu_shell.dart';
 
+// ← ADD THIS LINE ONLY
+import '../../core/network/services/auth_storage_service.dart';
+
+final AuthStorageService _authStorageService = AuthStorageService();
+
 final GoRouter router = GoRouter(
   navigatorKey: Get.key,
-  initialLocation: '/create-account',
+  initialLocation: '/create-account', // We keep this; redirect will change it immediately
+
   routes: [
     // Full-screen auth routes (NO bottom navigation)
     GoRoute(
@@ -83,23 +89,23 @@ final GoRouter router = GoRouter(
           ],
         ),
 
-        // NEW Branch 3: Utility (no tab selected)
+        // Branch 3: Utility (no tab selected)
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/utility',
               name: 'utility',
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: SizedBox.shrink(), // Empty placeholder
+                child: SizedBox.shrink(),
               ),
               routes: [
                 GoRoute(
-                  path: 'change_city',  // ← change from 'terms' to 'terms_condition'
+                  path: 'change_city',
                   name: 'change_city',
                   builder: (context, state) => const ChangeCityScreen(),
                 ),
                 GoRoute(
-                  path: 'terms_condition',  // ← change from 'terms' to 'terms_condition'
+                  path: 'terms_condition',
                   name: 'terms_condition',
                   builder: (context, state) => const TermsAndConditionsScreen(),
                 ),
@@ -115,4 +121,27 @@ final GoRouter router = GoRouter(
       ],
     ),
   ],
+
+  // ← THIS IS THE ONLY NEW PART (just 20 lines)
+  redirect: (BuildContext context, GoRouterState state) async {
+    // Run only once on app start (when we are about to show /create-account)
+    if (state.matchedLocation != '/create-account' &&
+        state.matchedLocation != '/create-account/login') {
+      return null; // Let normal navigation happen
+    }
+
+    try {
+      final refreshToken = await _authStorageService.getRefreshToken();
+      final bool hasToken = refreshToken != null && refreshToken.isNotEmpty;
+
+      if (hasToken) {
+        return '/home'; // User is logged in → go straight to Home
+      }
+    } catch (e) {
+      // If anything goes wrong, stay on create-account (safe)
+      print('Token check error: $e');
+    }
+
+    return null; // No token → stay on create-account
+  },
 );

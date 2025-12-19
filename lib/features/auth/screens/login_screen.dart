@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     DPrint.log("Login action");
     if (!_formKey.currentState!.validate()) return;
     // Pass data to AuthController (you can extend AuthController to handle signup)
-    await _authController.login(_nameController.text.trim(),_phoneController.text);
+    await _authController.login(_nameController.text.trim(),_phoneController.text, context);
   }
 
   @override

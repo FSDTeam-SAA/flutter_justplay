@@ -1,53 +1,52 @@
-
+import 'package:flutter/material.dart';
 import 'package:flutter_justplay/features/auth/models/request/register_request_model.dart';
+import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
 import 'package:flutter_justplay/features/home/screens/home_screen.dart';
 import 'package:flutx_core/core/debug_print.dart';
+import 'package:get/get.dart'; // You can keep GetX for dependency injection and state
+import 'package:go_router/go_router.dart'; // ← ADD THIS
 
-import 'package:get/get.dart';
 import '../../../core/base/base_controller.dart';
 import '../../../core/network/constants/key_constants.dart';
 import '../../../core/network/services/auth_storage_service.dart';
 import '../../../core/network/services/secure_store_services.dart';
-
 import '../models/request/login_request_model.dart';
 import '../repositories/auth_repository.dart';
-import '../screens/login_screen.dart';
 
 class AuthController extends BaseController {
   final _authRepo = Get.find<AuthRepository>();
-
-
   final AuthStorageService _authStorageService = AuthStorageService();
+  final SecureStoreServices _secureStoreServices = SecureStoreServices();
 
+  Future<void> register(String name, String phone, BuildContext context) async {
+    setLoading(true);
 
-  Future<void> register(String name, String phone) async {
-    final request = RegisterRequestModel(
-      name: name, phone: phone,
-    );
+    final request = RegisterRequestModel(name: name, phone: phone);
 
     final result = await _authRepo.register(request);
 
     result.fold(
-      (fail) {
+          (fail) {
         setError(fail.message);
-        DPrint.log("Register success result : ${fail.message}");
+        DPrint.log("Register failed: ${fail.message}");
         setLoading(false);
       },
-      (success) {
-        DPrint.log("Register success result : ${success.data.id}");
-        Get.to(LoginScreen());
+          (success) {
+        DPrint.log("Register success: User ID ${success.data.id}");
         setLoading(false);
+        // Navigate to Login screen (replace current screen)
+        context.go('/create-account/login'); // or just '/login' if you prefer named route
+        // Alternatively: context.push('/create-account/login');
       },
     );
   }
 
-  //
-  Future<void> login(String name, String phone) async {
+  Future<void> login(String name, String phone, BuildContext context) async {
+    setLoading(true);
+
     final request = LoginRequestModel(name: name, phone: phone);
 
     final result = await _authRepo.login(request);
-
-    DPrint.log("Login Response ${result.isRight()}");
 
     result.fold(
           (fail) {
@@ -55,114 +54,32 @@ class AuthController extends BaseController {
         setLoading(false);
       },
           (success) async {
-        // Extract user data
         final user = success.data.user;
 
-        // Store access token and refresh token for ANY user
+        // Store tokens
         await _authStorageService.storeAuthData(
           accessToken: success.data.accessToken,
           refreshToken: success.data.refreshToken,
           userId: user.id,
         );
 
-        // Navigate to home screen
-        Get.to(() => HomeScreen());
+        setLoading(false);
+
+        // CORRECT: Use GoRouter to go to the main app (with bottom navigation)
+        context.go('/home');
+        // This triggers the StatefulShellRoute → shows NavigationMenuShell with Home tab selected
       },
     );
   }
-  //
-  //
-  // //
-  // Future forgotPass(String email) async {
-  //   final request = ForgotPasswordRequestModel(email: email);
-  //   final result = await _authRepo.forgotPassword(request);
-  //
-  //   result.fold(
-  //         (fail) {
-  //       setError(fail.message);
-  //       setLoading(false);
-  //     },
-  //         (success) {
-  //       Get.off(() => VerifyCodeScreen(email: email)); //changed
-  //       setLoading(false);
-  //     },
-  //   );
-  // }
-  //
-  //
-  // Future verifyOTP(String email, String otp) async {
-  //
-  //   final request = VerifyOtpRequestModel(email: email, otp: otp);
-  //   final result = await _authRepo.verifyOtp(request);
-  //
-  //   result.fold(
-  //     (fail) {
-  //       setError(fail.message);
-  //       DPrint.log("verify otp success result : ${fail.message}");
-  //
-  //     },
-  //     (success) {
-  //       DPrint.log("verify otp success result : ${success.message}");
-  //       Get.to(CreateNewPasswordScreen(email: email, otp: otp));
-  //     },
-  //   );
-  // }
-  //
-  //
-  //
-  // Future createNewPass(String email, String otp, String newPassword) async {
-  //
-  //   final request = CreateNewPasswordRequestModel(
-  //     email: email,
-  //     otp: otp,
-  //     newPassword: newPassword,
-  //   );
-  //   final result = await _authRepo.createNewPassword(request);
-  //
-  //   result.fold(
-  //         (fail) {
-  //       setError(fail.message);
-  //       DPrint.log("New Password set failed result : ${fail.message}");
-  //     },
-  //         (success) {
-  //       DPrint.log(
-  //         "New Password set successfully result : ${success.message}",
-  //       );
-  //       Get.offAll(LoginScreen());
-  //     },
-  //   );
-  // }
-  //
-  // //
-  // Future refreshToken() async {
-  //   setLoading(true);
-  //
-  //   final refreshToken = await _authStorageService.getRefreshToken();
-  //   DPrint.log("Got refresh token: $refreshToken");
-  //   final request = RefreshTokenRequestModel(refreshToken: refreshToken);
-  //
-  //   final result = await _authRepo.refreshToken(request);
-  //
-  //   final navi = result.fold(
-  //         (fail) {
-  //       DPrint.log("Refresh token failed: ${fail.message}");
-  //       return _isSuccess = false;
-  //     },
-  //         (success) async {
-  //       DPrint.log("Refresh token success: ${success.message}");
-  //       await _authStorageService.storeAccessToken(accessToken: success.data.accessToken);
-  //       await _authStorageService.storeRefreshToken(refreshToken: success.data.refreshToken);
-  //       //await _authStorageService.storeRefreshToken(success.data.refreshToken);
-  //       return _isSuccess = true;
-  //     },
-  //   );
-  //   return navi;
-  // }
-  final SecureStoreServices _secureStoreServices = SecureStoreServices();
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     await _authStorageService.clearAuthData();
     await _secureStoreServices.deleteData(KeyConstants.conversationId);
-    Get.offAll(() => LoginScreen());
+
+    // Go to auth flow, clearing all previous routes
+    context.go('/login');
   }
+
+// Optional: Add a helper if you need to access context elsewhere
+// But better to pass context from UI
 }

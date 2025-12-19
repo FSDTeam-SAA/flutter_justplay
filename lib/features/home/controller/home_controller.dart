@@ -7,6 +7,7 @@ import 'package:flutter_justplay/features/home/models/response/fetch_city_respon
 import 'package:flutter_justplay/features/home/models/response/fetch_pitch_response_model.dart';
 import 'package:flutter_justplay/features/home/models/response/fetch_sport_response_model.dart';
 import 'package:flutter_justplay/features/home/repositories/home_repo.dart';
+import 'package:flutter_justplay/features/home/repositories/profile_repo.dart';
 import 'package:flutter_justplay/features/home/screens/drawer_screen.dart';
 import 'package:get/get.dart';
 import '../../../../core/base/base_controller.dart';
@@ -15,6 +16,7 @@ import '../../../core/network/services/multiple_form_data_manager.dart';
 
 class HomeController extends BaseController {
   final HomeRepo _homeRepo = Get.find<HomeRepo>();
+  final ProfileRepository _profileRepository = Get.find<ProfileRepository>();
   final AuthStorageService _authStorageService = AuthStorageService();
   final ProfileController _profileController = Get.find<ProfileController>();
 
@@ -102,7 +104,7 @@ class HomeController extends BaseController {
       },
           (success) async {
         // Navigate to home screen
-            Get.offAll(() => MenuScreen());
+            Get.to(() => MenuScreen());
       },
     );
   }
@@ -125,6 +127,28 @@ class HomeController extends BaseController {
         //     context.push(
         //       '/home/booking_confirm',
         //     );
+      },
+    );
+  }
+
+  Future<void> changeCity(String city
+      ) async {
+    _multiFormDataManager.addTextData("city", city);
+    //_multiFormDataManager.addTextData("id", id);
+
+
+    final formRequest = await _multiFormDataManager.toFormDataAsync();
+
+    final result = await _profileRepository.updatePersonalInfo(formRequest);
+
+    result.fold(
+          (fail) {
+        DPrint.log('Personal info: ${fail.message}');
+      },
+          (success) async {
+        DPrint.log('Personal info: ${success.message}');
+        Get.to(() => MenuScreen());
+        _multiFormDataManager.clear();
       },
     );
   }

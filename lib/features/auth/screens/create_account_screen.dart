@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/core/utils/app_svg.dart';
 import 'package:flutter_justplay/features/auth/controller/auth_controller.dart';
 import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
+import 'package:flutter_justplay/features/auth/screens/privacy_and_policy.dart';
+import 'package:flutter_justplay/features/auth/screens/terms_of_service.dart';
 import 'package:flutx_core/core/validation/validators.dart';
 import 'package:get/get.dart';
 import '../../../core/common/widgets/button_widgets.dart';
@@ -23,12 +26,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final FocusNode _phoneFocus = FocusNode();
 
+  final TextEditingController _dobController = TextEditingController();
+  final FocusNode _dobFocus = FocusNode();
+
   final AuthController _authController = Get.find<AuthController>();
+
+  // Add this for checkbox state
+  bool _agreedToTerms = false;
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    // Pass data to AuthController (you can extend AuthController to handle signup)
-    await _authController.register(_nameController.text.trim(),_phoneController.text);
+    if (!_agreedToTerms) {
+      // Optional: show a snackbar or error if terms not accepted
+      Get.snackbar('Required', 'Please agree to the Terms of Service and Privacy Policy');
+      return;
+    }
+
+    await _authController.register(
+      _nameController.text.trim(),
+      _phoneController.text,context
+    );
   }
 
   @override
@@ -142,13 +159,94 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ),
 
                   SizedBox(height: 24,),
+                  TextFormField(
+                    controller: _dobController,
+                    focusNode: _dobFocus,
+                    keyboardType: TextInputType.datetime,
+                    textInputAction: TextInputAction.next,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                    decoration: context.primaryInputDecoration().copyWith(
+                        hintText: "Date of birth",
+                        hintStyle: TextStyle(color: Color(0xFF828282))
+                    ),
+                    validator: Validators.date,
+                    autofillHints: const [AutofillHints.telephoneNumber],
+                    onFieldSubmitted: (_) =>
+                        FocusScope.of(context).requestFocus(_dobFocus),
+                  ),
+
+                  SizedBox(height: 24,),
 
                   PrimaryButton(text: 'Continue', onApiPressed: _submit,),
 
                   SizedBox(height: 27,),
 
-                  Text('By clicking continue, you agree to our\nTerms of Service and Privacy Policy',
+                  Text('By clicking continue, you agree to our',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14)),
+
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center, // Aligns checkbox vertically with the center of the text
+                        mainAxisAlignment: MainAxisAlignment.center, // Makes the Row only as wide as its content
+                        children: [
+                          Checkbox(
+                            value: _agreedToTerms,
+                            activeColor: Colors.white,
+                            checkColor: Colors.black,
+                            side: const BorderSide(color: Colors.white, width: 1.5),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _agreedToTerms = value ?? false;
+                              });
+                            },
+                          ),
+                          //const SizedBox(width: 8), // Restored spacing
+                          Expanded( // Still needed if this Row is inside a wider parent (like a Column with full width)
+                            child: RichText(
+                              text: TextSpan(
+                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                                children: [
+                                  TextSpan(
+                                    text: 'Terms of Service',
+                                    style: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => const TermsOfService()),
+                                        );
+                                      },
+                                  ),
+                                  const TextSpan(text: ' and '),
+                                  TextSpan(
+                                    text: 'Privacy Policy',
+                                    style: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => const PrivacyAndPolicy()),
+                                        );
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
 
                   SizedBox(height: 17.5,),
                   Column(
