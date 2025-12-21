@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/features/auth/controller/auth_controller.dart';
-import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
 import 'package:flutter_justplay/features/home/controller/profile_controller.dart';
+import 'package:flutter_justplay/features/bookings/presentation/screens/my_booking_screen.dart';
+import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
+import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
 import 'package:flutter_justplay/features/home/screens/profile_screen.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
