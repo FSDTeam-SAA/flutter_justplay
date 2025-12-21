@@ -187,68 +187,56 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   Text('By clicking continue, you agree to our',
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14)),
 
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 50.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center, // Aligns checkbox vertically with the center of the text
-                        mainAxisAlignment: MainAxisAlignment.center, // Makes the Row only as wide as its content
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // 🔥 key line
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      value: _agreedToTerms,
+                      activeColor: Colors.white,
+                      checkColor: Colors.black,
+                      side: const BorderSide(color: Colors.white, width: 1.5),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _agreedToTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(color: Colors.white, fontSize: 14),
                         children: [
-                          Checkbox(
-                            value: _agreedToTerms,
-                            activeColor: Colors.white,
-                            checkColor: Colors.black,
-                            side: const BorderSide(color: Colors.white, width: 1.5),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _agreedToTerms = value ?? false;
-                              });
-                            },
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: const TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const TermsOfService()),
+                                );
+                              },
                           ),
-                          //const SizedBox(width: 8), // Restored spacing
-                          Expanded( // Still needed if this Row is inside a wider parent (like a Column with full width)
-                            child: RichText(
-                              text: TextSpan(
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
-                                children: [
-                                  TextSpan(
-                                    text: 'Terms of Service',
-                                    style: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => const TermsOfService()),
-                                        );
-                                      },
-                                  ),
-                                  const TextSpan(text: ' and '),
-                                  TextSpan(
-                                    text: 'Privacy Policy',
-                                    style: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => const PrivacyAndPolicy()),
-                                        );
-                                      },
-                                  ),
-                                ],
-                              ),
-                            ),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: const TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const PrivacyAndPolicy()),
+                                );
+                              },
                           ),
                         ],
                       ),
                     ),
-                  ),
-
-
-                  SizedBox(height: 17.5,),
+                  ],
+                ),
+              ),
+              SizedBox(height: 17.5,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
