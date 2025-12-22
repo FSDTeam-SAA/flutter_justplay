@@ -43,8 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(bottom: 50),
           child: GestureDetector(
             onTap: () {
-              Navigator.pop(context);
-              // Handle logout
+              context.push('/bookings');
             },
             child: Container(
               width: double.infinity,
