@@ -1,72 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_justplay/core/common/widgets/app_scaffold.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
-import '../widgets/rounded_button_widget.dart';
-
-class BookingCancelledScreen extends StatelessWidget {
-  const BookingCancelledScreen({super.key});
+class CancelledScreen extends StatefulWidget {
+  const CancelledScreen({super.key});
 
   @override
+  State<CancelledScreen> createState() => _CancelledScreenState();
+}
+
+class _CancelledScreenState extends State<CancelledScreen> {
+  @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      appBar: AppBar(),
-      body: Center(
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
-
-              Text(
-                'Your booking has\nbeen cancelled',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 30,
-                  color: Color(0xFF000000),
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              Text(
-                'The venue has been notified',
+              const Text(
+                'Your booking has been cancelled',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16.5,
-                  height: 1.4,
+                  fontSize: 30,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF000000),
                 ),
               ),
-
-              const SizedBox(height: 30),
-
-              RoundedButton(
-                text: 'Back To Bookings',
-                backgroundColor: Color(0xFF242331),
-                textColor: Color(0xFFFFFFFF),
-
-                height: 56,
-                width: Get.width * 0.8,
-                borderRadius: 100,
-                onPressed: () => Get.back(),
+              const SizedBox(height: 12),
+              const Text(
+                'The venue has been notified',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.5, color: Colors.black, fontWeight: FontWeight.w700),
               ),
-
-              const SizedBox(height: 6.95),
-
-              RoundedButton(
-                text: 'Make New Booking',
-                backgroundColor: Colors.transparent,
-                textColor: Color(0xFF000000),
-                borderColor: Color(0xFF000000), // ← border added
-                borderWidth: 1,
-                height: 56,
-                width: Get.width * 0.8,
-                borderRadius: 100,
-                onPressed: () {},
+              const SizedBox(height: 60),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Back To Bookings',
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () {
+                    context.go('/home/booking');
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.black),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Make New Booking',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

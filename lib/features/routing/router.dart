@@ -13,6 +13,7 @@ import 'package:flutter_justplay/features/home/screens/booking_screen.dart';
 import 'package:flutter_justplay/features/events/screens/events_screen.dart';
 import 'package:flutter_justplay/features/auth/screens/create_account_screen.dart';
 import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
+import '../bookings/presentation/screens/booking_cancel_screen.dart';
 import 'navigation_menu_shell.dart';
 
 // ← ADD THIS LINE ONLY
@@ -75,6 +76,18 @@ final GoRouter router = GoRouter(
               path: '/bookings',
               name: 'bookings',
               builder: (context, state) => const MyBookingScreen(),
+              routes: [
+                GoRoute(
+                  path: 'cancel',
+                  name: 'cancel-flow',
+                  builder: (context, state) => const CancelledScreen(),
+                ),
+                // GoRoute(
+                //   path: 'booking_confirm',
+                //   name: 'booking_confirm',
+                //   builder: (context, state) => const BookingConfirmedScreen(),
+                // ),
+              ],
             ),
           ],
         ),

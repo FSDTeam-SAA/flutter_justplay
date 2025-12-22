@@ -107,8 +107,8 @@ class _MenuScreenState extends State<MenuScreen> {
             SizedBox(height: 32,),
 
             _menuItem("Bookings", () {
-              Get.to(() => MyBookingScreen());
-              // Navigate to bookings
+              Navigator.of(context).pop();
+              context.go('/bookings');
             }),
             _menuItem("Change City", () {
               Navigator.of(context).pop();

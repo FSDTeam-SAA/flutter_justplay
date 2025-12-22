@@ -36,8 +36,7 @@ class ApiConstants {
   static ProfileEndpoints get profile => ProfileEndpoints();
   static HomeEndpoints get home => HomeEndpoints();
   static EventEndpoints get event => EventEndpoints();
-  static ChatEndpoints get chat => ChatEndpoints();
-  static RatingEndpoints get rating => RatingEndpoints();
+  static BookingEndpoints get booking => BookingEndpoints();
 
 }
 
@@ -64,7 +63,6 @@ class ProfileEndpoints {
   String fetchFavorite(String userId) => '${ApiConstants.baseUrl}/favorites/$userId';
   final String fetchOngoing = '${ApiConstants.baseUrl}/orders/my?filter=ongoing';
   final String fetchDelivered = '${ApiConstants.baseUrl}/orders/my?filter=completed';
-  // String fetchCategory(String userId) =>;
 }
 
 class HomeEndpoints {
@@ -77,30 +75,17 @@ class HomeEndpoints {
    final String getPitch = '${ApiConstants.baseUrl}/pitch/';
    final String issue = '${ApiConstants.baseUrl}/issue/';
    final String createBooking = '${ApiConstants.baseUrl}/booking/';
-  // final String removeFavorite = '${ApiConstants.baseUrl}/favorites';
-  // final String popular = '${ApiConstants.baseUrl}/items';
-  // final String addCart = '${ApiConstants.baseUrl}/cart/add';
-  // final String removeCart = '${ApiConstants.baseUrl}/cart/remove';
-  // final String removeOneCart = '${ApiConstants.baseUrl}/cart/reduce';
 }
 
 class EventEndpoints {
   final String fetchEvent = '${ApiConstants.baseUrl}/event/';
   String fetchOrder = '${ApiConstants.baseUrl}/orders/my';
   String placeOrder = '${ApiConstants.baseUrl}/orders';
-  // String fetchCategory(String userId) =>;
 }
 
-class ChatEndpoints {
-  String sendMsg(String conversationId) => '${ApiConstants.baseUrl}/chat/messages/$conversationId';
-  String getAdmin = '${ApiConstants.baseUrl}/users/admin';
-  String createConversation = '${ApiConstants.baseUrl}/chat/conversations';
-  String getAllMsg(String conversationId) => '${ApiConstants.baseUrl}/chat/messages/$conversationId';
-  // String fetchCategory(String userId) =>;
+class BookingEndpoints {
+  final String fetchBooking = '${ApiConstants.baseUrl}/booking/';
+  String cancleBooking(String bookingId) => '${ApiConstants.baseUrl}/booking/$bookingId';
+  String placeOrder = '${ApiConstants.baseUrl}/orders';
 }
 
-class RatingEndpoints {
-  final String addReview = '${ApiConstants.baseUrl}/reviews';
-  String getReview(String itemId) => '${ApiConstants.baseUrl}/reviews/item/$itemId';
-  String deleteReview(String id) => '${ApiConstants.baseUrl}/reviews/$id';
-}

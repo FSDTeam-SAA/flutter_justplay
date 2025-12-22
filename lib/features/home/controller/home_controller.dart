@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import '../../../../core/base/base_controller.dart';
 import '../../../core/network/services/auth_storage_service.dart';
 import '../../../core/network/services/multiple_form_data_manager.dart';
+import '../../bookings/presentation/controller/booking_controller.dart';
 
 class HomeController extends BaseController {
   final HomeRepo _homeRepo = Get.find<HomeRepo>();
@@ -123,10 +124,9 @@ class HomeController extends BaseController {
         setError(fail.message);
       },
           (success) async {
-        // Navigate to home screen
-        //     context.push(
-        //       '/home/booking_confirm',
-        //     );
+            // Critical: Refresh the bookings list immediately
+            final bookingController = Get.find<BookingController>();
+            await bookingController.fetchBooking();
       },
     );
   }
