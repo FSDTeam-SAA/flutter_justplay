@@ -19,8 +19,6 @@ class AuthController extends BaseController {
   final SecureStoreServices _secureStoreServices = SecureStoreServices();
 
   Future<void> register(String name, String phone, BuildContext context) async {
-    setLoading(true);
-
     final request = RegisterRequestModel(name: name, phone: phone);
 
     final result = await _authRepo.register(request);

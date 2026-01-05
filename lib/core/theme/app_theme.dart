@@ -9,9 +9,22 @@ class AppTheme {
     primaryColor: AppColors.primaryButtonDeep,
     colorScheme: ColorScheme.light(primary: AppColors.primaryButtonDeep),
 
-    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme).apply(
-      bodyColor: AppColors.primaryBlack,
-      displayColor: AppColors.primaryBlack,
+    textTheme: TextTheme(
+      displayLarge: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      displayMedium: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      displaySmall: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      headlineLarge: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      headlineMedium: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      headlineSmall: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      titleLarge: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      titleMedium: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      titleSmall: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      bodyLarge: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      bodyMedium: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      bodySmall: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      labelLarge: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w700, color: AppColors.primaryBlack),
+      labelMedium: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
+      labelSmall: TextStyle(fontFamily: 'Ligconsolata', fontWeight: FontWeight.w400, color: AppColors.primaryBlack),
     ),
 
     appBarTheme: AppBarThemeData(
