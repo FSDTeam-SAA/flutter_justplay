@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class TermsOfService extends StatefulWidget {
   const TermsOfService({super.key});
@@ -17,7 +18,7 @@ class _TermsOfServiceState extends State<TermsOfService> {
           child: Column(
             children: [
             SizedBox(height: 50,),
-              Text('Terms of Service', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),),
+              Text('terms_of_service'.tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),),
           SizedBox(height: 30,),
           Text('We take reasonable technical and organizational measures to protect your personal information against unauthorized access, loss, misuse, or alteration. These measures may include restricted access, secure servers, and encrypted communication where appropriate.\n\n'
               'Please note that no method of electronic storage or transmission is 100% secure, and we cannot guarantee absolute security.\n\n'

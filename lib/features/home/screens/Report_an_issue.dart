@@ -17,7 +17,7 @@ class _ReportAnIssueState extends State<ReportAnIssue> {
   final HomeController _homeController = Get.find<HomeController>();
   
   _submit(){
-    _homeController.issue('Issue with pitch booking', _issueField.text.trim(), '693d2eeae915efbcca41447a');
+    _homeController.issue('issue_with_pitch_booking'.tr, _issueField.text.trim(), '693d2eeae915efbcca41447a');
   }
   @override
   void dispose() {
@@ -35,15 +35,15 @@ class _ReportAnIssueState extends State<ReportAnIssue> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 13,),
-          Center(child: Text('Report an Issue', textAlign:TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),)),
+          Center(child: Text('report_issue_lower'.tr, textAlign:TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),)),
           SizedBox(height: 6,),
-          Text('Please state the issue below', style: TextStyle(fontSize: 16.5, ),),
+          Text('please_state_the_issue_below'.tr, style: TextStyle(fontSize: 16.5, ),),
           SizedBox(height: 12,),
           TextFormField(
             controller: _issueField,
             maxLines: 20, // optional: good for reporting an issue
             decoration: InputDecoration(
-              hintText: 'Describe your issue...',
+              hintText: 'describe_your_issue'.tr,
               contentPadding: const EdgeInsets.all(16),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4), // rectangle shape
@@ -60,7 +60,7 @@ class _ReportAnIssueState extends State<ReportAnIssue> {
           ),
           SizedBox(height: 21,),
 
-          Container(height: 61, child: SecondaryButton(text: 'Submit',onApiPressed: () => _submit(),))
+          Container(height: 61, child: SecondaryButton(text: 'submit'.tr,onApiPressed: () => _submit(),))
         ],
       ),
     );

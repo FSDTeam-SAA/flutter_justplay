@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/assets_const.dart';
 
@@ -23,17 +24,17 @@ class NavigationMenuShell extends StatelessWidget {
       {
         'icon': Images.home,
         'selectedIcon': Images.home1,
-        'label': 'Home',
+        'label': 'home'.tr,
       },
       {
         'icon': Images.appointment1,
         'selectedIcon': Images.appointment,
-        'label': 'Bookings',
+        'label': 'bookings'.tr,
       },
       {
         'icon': Images.event1,
         'selectedIcon': Images.event,
-        'label': 'Events',
+        'label': 'events'.tr,
       },
     ];
 

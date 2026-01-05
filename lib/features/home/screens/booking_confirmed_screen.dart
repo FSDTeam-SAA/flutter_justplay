@@ -26,10 +26,11 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
     // Safely retrieve extra data from GoRouter
     final extra = GoRouterState.of(context).extra as Map<String, dynamic>?;
 
-    if (extra != null && selectedPitch.value == null) { // Only set once
-      selectedPitch.value = extra['pitch'] as Pitch?;
-      selectedDate.value = extra['date'] as DateTime?;
-      selectedTimeSlot.value = extra['time'] as String?;
+    if (extra != null && selectedPitch.value == null) {
+      // Only set once
+      selectedPitch.value = extra['pitch'.tr] as Pitch?;
+      selectedDate.value = extra['date'.tr] as DateTime?;
+      selectedTimeSlot.value = extra['time'.tr] as String?;
     }
   }
 
@@ -54,7 +55,7 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
             final timeSlot = selectedTimeSlot.value;
 
             if (pitch == null || date == null || timeSlot == null) {
-              return const Center(child: Text('Booking details not found'));
+              return Center(child: Text('booking_details_not_found'.tr));
             }
 
             final formattedDate = DateFormat('EEEE d MMMM').format(date);
@@ -62,14 +63,18 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
 
             return Column(
               children: [
-                const Text(
-                  'Booking Confirmed!',
+                Text(
+                  'booking_confirmed'.tr,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Please pay venue on arrival',
-                  style: TextStyle(fontSize: 16.5, fontWeight: FontWeight.w400, color: Colors.black),
+                Text(
+                  'please_pay_venue_on_arrival'.tr,
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
                 ),
                 const SizedBox(height: 25),
 
@@ -77,7 +82,10 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
+                    ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(26),
@@ -103,7 +111,9 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
                               color: Colors.white,
                               fontSize: 22.4,
                               fontWeight: FontWeight.bold,
-                              shadows: [Shadow(color: Colors.black, blurRadius: 10)],
+                              shadows: [
+                                Shadow(color: Colors.black, blurRadius: 10),
+                              ],
                             ),
                           ),
                         ),
@@ -111,7 +121,10 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
                           bottom: 16,
                           right: 20,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE0E400),
                               borderRadius: BorderRadius.circular(30),
@@ -139,7 +152,10 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
+                    ),
                   ),
                   child: Center(
                     child: Text(
@@ -167,8 +183,8 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
                         borderRadius: BorderRadius.circular(35),
                       ),
                     ),
-                    child: const Text(
-                      'Make Another Booking',
+                    child: Text(
+                      'make_another_booking'.tr,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

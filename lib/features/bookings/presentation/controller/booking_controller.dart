@@ -80,8 +80,8 @@ class BookingController extends BaseController {
 
         DPrint.log('Booking $bookingId cancelled successfully');
         Get.snackbar(
-          'Success',
-          'Booking cancelled successfully',
+          'success'.tr,
+          'booking_cancelled_successfully'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,

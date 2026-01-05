@@ -91,13 +91,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              const Text(
-                "Profile",
+               Text(
+                "profile".tr,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
-              const Text(
-                "Edit your details below",
+               Text(
+                "edit_your_details_below".tr,
                 style: TextStyle(
                   fontSize: 16.5,
                   color: Colors.black,
@@ -117,7 +117,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 textInputAction: TextInputAction.next,
                 style: const TextStyle(fontSize: 16, color: Colors.black),
                 decoration: context.primaryInputDecoration().copyWith(
-                  hintText: "Full Name",
+                  hintText: "name".tr,
                 ),
               ),
               const SizedBox(height: 16),
@@ -130,7 +130,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 textInputAction: TextInputAction.next,
                 style: const TextStyle(fontSize: 16, color: Colors.black),
                 decoration: context.primaryInputDecoration().copyWith(
-                  hintText: "Phone Number",
+                  hintText: "phone".tr,
                 ),
               ),
           
@@ -142,7 +142,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 textInputAction: TextInputAction.next,
                 style: const TextStyle(fontSize: 16, color: Colors.black),
                 decoration: context.primaryInputDecoration().copyWith(
-                  hintText: "City",
+                  hintText: "city".tr,
                 ),
               ),
           
@@ -150,7 +150,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               Container(
                 height: 90,
                 child: SecondaryButton(
-                  text: 'Save Details',
+                  text: 'save_details'.tr,
                   onApiPressed: _submit,
                 ),
               ),

@@ -17,8 +17,7 @@ class EventsScreen extends StatelessWidget {
     controller.fetchEvent();
 
     return AppScaffold(
-      appBar: AppBar(
-      ),
+      appBar: AppBar(),
       body: Obx(() {
         // Loading state
         if (controller.isLoading.value) {
@@ -43,12 +42,12 @@ class _ComingSoonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Coming Soon!',
+            'coming_soon'.tr,
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
@@ -76,16 +75,16 @@ class _EventsContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     final EventController controller = Get.find<EventController>();
     final events = controller.event.value!.events;
+    final int count = events.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-
-        SizedBox(height: 29,),
+        SizedBox(height: 29),
         // Title/Header
-        const Text(
-          'Events',
+        Text(
+          'events'.tr,
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
@@ -94,12 +93,20 @@ class _EventsContentView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '${events.length} event${events.length == 1 ? '' : 's'} available',
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.black,
-          ),
+          events.length == 1
+              ? 'events_available'.trParams({
+                  'count': events.length.toString(),
+                })
+              : 'events_available_plural'.trParams({
+                  'count': events.length.toString(),
+                }),
+          style: const TextStyle(fontSize: 18, color: Colors.black),
         ),
+
+        // Text(
+        //   '${events.length} event${events.length == 1 ? '' : 's'} available',
+        //   style: const TextStyle(fontSize: 18, color: Colors.black),
+        // ),
         const SizedBox(height: 24),
 
         // Events Grid
@@ -146,7 +153,6 @@ class _EventCard extends StatelessWidget {
           image: DecorationImage(
             image: NetworkImage(event.image.url),
             fit: BoxFit.cover,
-
           ),
         ),
         child: Column(
@@ -173,24 +179,28 @@ class _EventCard extends StatelessWidget {
                 ],
               ),
               textAlign: TextAlign.center,
-              maxLines: 1,  // Force single line
-              overflow: TextOverflow.ellipsis,  // Add ellipsis for overflow
+              maxLines: 1, // Force single line
+              overflow: TextOverflow.ellipsis, // Add ellipsis for overflow
             ),
             const SizedBox(height: 12),
             Text(
               formattedDate,
-              style: const TextStyle(fontSize: 20, color: Colors.white,shadows: [
-                Shadow(
-                  offset: Offset(2, 2),
-                  blurRadius: 4,
-                  color: Colors.black54,
-                ),
-                Shadow(
-                  offset: Offset(-1, -1),
-                  blurRadius: 4,
-                  color: Colors.black45,
-                ),
-              ],),
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                    color: Colors.black54,
+                  ),
+                  Shadow(
+                    offset: Offset(-1, -1),
+                    blurRadius: 4,
+                    color: Colors.black45,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             // Text(

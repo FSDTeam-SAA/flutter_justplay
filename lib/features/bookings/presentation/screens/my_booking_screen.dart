@@ -112,13 +112,13 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'You have no bookings',
+                       Text(
+                        'you_have_no_bookings'.tr,
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                       const SizedBox(height: 30),
                       PrimaryButton(
-                        text: 'New Booking',
+                        text: 'new_booking'.tr,
                         onSimplePressed: () {
                           context.go('/home/booking');
                         },
@@ -159,8 +159,8 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                       ),
                       child: controller.isCancelling.value
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text(
-                        'Cancel Booking',
+                          :  Text(
+                        'cancel_booking'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

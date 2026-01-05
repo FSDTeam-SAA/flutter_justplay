@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class PrivacyAndPolicy extends StatefulWidget {
   const PrivacyAndPolicy({super.key});
@@ -17,7 +18,7 @@ class _PrivacyAndPolicyState extends State<PrivacyAndPolicy> {
         child: Column(
           children: [
             SizedBox(height: 50,),
-            Text('Privacy and Policy', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),),
+            Text('privacy_policy'.tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 25),),
             SizedBox(height: 30,),
             Text('Your privacy is important to us. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our pitch booking mobile application and related services (the "App").\n\nBy using the App, you agree to the collection and use of information in accordance with this Privacy Policy.\n\n'
                 'Last UpdatedThis Privacy Policy was last updated on [DATE].\n'

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/common/widgets/app_scaffold.dart';
@@ -22,7 +23,7 @@ class EventDetailScreen extends StatelessWidget {
           children: [
             SizedBox(height: 26),
             Text(
-              'Event Page Template',
+              'event_page_template'.tr,
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 26),

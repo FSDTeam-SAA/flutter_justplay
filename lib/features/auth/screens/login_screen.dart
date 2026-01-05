@@ -31,7 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
     DPrint.log("Login action");
     if (!_formKey.currentState!.validate()) return;
     // Pass data to AuthController (you can extend AuthController to handle signup)
-    await _authController.login(_nameController.text.trim(),_phoneController.text, context);
+    await _authController.login(
+      _nameController.text.trim(),
+      _phoneController.text,
+      context,
+    );
   }
 
   @override
@@ -43,10 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             // Background image
             Positioned.fill(
-              child: Image.asset(
-                Images.background,
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(Images.background, fit: BoxFit.cover),
             ),
 
             // Main content (logo + titles) – centered vertically & horizontally
@@ -80,10 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   const SizedBox(height: 35), // space between logo and title
-
                   // Title
-                  const Text(
-                    'Login',
+                  Text(
+                    'login'.tr,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 27,
@@ -103,20 +103,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: 27,),
+                  SizedBox(height: 27),
 
                   TextFormField(
                     controller: _nameController,
                     focusNode: _nameFocus,
                     keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                     decoration: context.primaryInputDecoration().copyWith(
-                      hintText: "Name",
-                        hintStyle: TextStyle(color: Color(0xFF828282))
+                      hintText: "name".tr,
+                      hintStyle: TextStyle(color: Color(0xFF828282)),
                     ),
                     validator: Validators.name,
                     autofillHints: const [AutofillHints.name],
@@ -124,19 +121,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         FocusScope.of(context).requestFocus(_nameFocus),
                   ),
 
-                  SizedBox(height: 24,),
+                  SizedBox(height: 24),
                   TextFormField(
                     controller: _phoneController,
                     focusNode: _phoneFocus,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                     decoration: context.primaryInputDecoration().copyWith(
                       hintText: "+ 964 0123 456 789",
-                      hintStyle: TextStyle(color: Color(0xFF828282))
+                      hintStyle: TextStyle(color: Color(0xFF828282)),
                     ),
                     validator: Validators.phone,
                     autofillHints: const [AutofillHints.telephoneNumber],
@@ -144,19 +138,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         FocusScope.of(context).requestFocus(_nameFocus),
                   ),
 
-                  SizedBox(height: 24,),
+                  SizedBox(height: 24),
 
-                  PrimaryButton(text: 'Login', onApiPressed:  _submit,),
+                  PrimaryButton(text: 'login'.tr, onApiPressed: _submit),
 
-                  SizedBox(height: 17.5,),
+                  SizedBox(height: 17.5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {Get.to(() => CreateAccountScreen());},
+                        onTap: () {
+                          Get.to(() => CreateAccountScreen());
+                        },
                         child: Text(
-                          'Create Account',
+                          'create_account_button'.tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -165,15 +161,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      SizedBox(height: 2), // 👈 Increased gap between text & underline
+                      SizedBox(
+                        height: 2,
+                      ), // 👈 Increased gap between text & underline
 
                       Container(
-                        width: 130,   // underline width
+                        width: 130, // underline width
                         height: 1.3, // thickness
                         color: Colors.white,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

@@ -12,10 +12,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/assets_const.dart' hide Icons;
 import '../../../core/utils/app_svg.dart';
+import '../../language/presentation/screens/languages_screen.dart';
 
 class MenuScreen extends StatefulWidget {
-
-
   const MenuScreen({Key? key}) : super(key: key);
 
   @override
@@ -40,7 +39,9 @@ class _MenuScreenState extends State<MenuScreen> {
 
       // Custom AppBar with yellow background
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE0E400), // Tall AppBar to fit everything
+        backgroundColor: const Color(
+          0xFFE0E400,
+        ), // Tall AppBar to fit everything
         automaticallyImplyLeading: false, // We control leading manually
         flexibleSpace: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -72,7 +73,9 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
 
                 GestureDetector(
-                  onTap: (){Get.to(() => ProfileEditScreen());},
+                  onTap: () {
+                    Get.to(() => ProfileEditScreen());
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 18.0, bottom: 7),
                     child: AppSvg(
@@ -95,33 +98,50 @@ class _MenuScreenState extends State<MenuScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            // Observe userInfo reactively
+            // // Observe userInfo reactively
+
+            // Obx(() {
+            //   final userInfo = _profileController.userInfo.value;
+            //   final userName = userInfo?.user.name;
+            //   return Text(
+            //     'hello $userName',
+            //     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+            //   );
+            // }),
             Obx(() {
               final userInfo = _profileController.userInfo.value;
-              final userName = userInfo?.user.name;
+              final userName = userInfo?.user.name ?? '';
+
               return Text(
-                'Hello $userName',
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                'hello'.trParams({'name': userName}),
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
               );
             }),
-            SizedBox(height: 32,),
+            SizedBox(height: 32),
 
-            _menuItem("Bookings", () {
+            _menuItem("bookings".tr, () {
               Navigator.of(context).pop();
               context.go('/bookings');
             }),
-            _menuItem("Change City", () {
+            _menuItem("change_city".tr, () {
               Navigator.of(context).pop();
               context.go('/utility/change_city');
             }),
-            _menuItem("Terms & Conditions", () {
+            _menuItem("terms_and_conditions".tr, () {
               Navigator.of(context).pop(); // Close menu
               context.go('/utility/terms_condition');
             }),
 
-            _menuItem("Report an Issue", () {
+            _menuItem("report_an_issue".tr, () {
               Navigator.of(context).pop();
               context.go('/utility/report_issue');
+            }),
+            _menuItem("language".tr, () {
+              Navigator.of(context).pop();
+              context.go('/utility/language');
             }),
 
             const Spacer(),
@@ -142,9 +162,9 @@ class _MenuScreenState extends State<MenuScreen> {
                     borderRadius: BorderRadius.circular(50),
                     border: Border.all(color: Colors.black, width: 1),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      "Log Out",
+                      "log_out".tr,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
