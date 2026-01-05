@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/features/auth/models/request/register_request_model.dart';
 import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
+import 'package:flutter_justplay/features/home/controller/home_controller.dart';
+import 'package:flutter_justplay/features/home/controller/profile_controller.dart';
 import 'package:flutter_justplay/features/home/screens/home_screen.dart';
 import 'package:flutx_core/core/debug_print.dart';
 import 'package:get/get.dart'; // You can keep GetX for dependency injection and state
@@ -62,7 +64,8 @@ class AuthController extends BaseController {
         );
 
         setLoading(false);
-
+        final profile = Get.find<ProfileController>();
+        await profile.fetchProfile();
         // CORRECT: Use GoRouter to go to the main app (with bottom navigation)
         context.go('/home');
         // This triggers the StatefulShellRoute → shows NavigationMenuShell with Home tab selected
@@ -75,7 +78,7 @@ class AuthController extends BaseController {
     await _secureStoreServices.deleteData(KeyConstants.conversationId);
 
     // Go to auth flow, clearing all previous routes
-    context.go('/login');
+    context.go('/create-account/login');
   }
 
 // Optional: Add a helper if you need to access context elsewhere

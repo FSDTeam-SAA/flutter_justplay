@@ -22,7 +22,7 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen> {
   final HomeController homeController = Get.find<HomeController>();
 
-  _submit() {
+  void _submit() {
     if (selectedDate.value == null || selectedTimeSlot.value == null) return;
 
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate.value!);
@@ -81,8 +81,8 @@ class _BookingScreenState extends State<BookingScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: isDatePill ? 95 : 125,
-        height: 75,
+        width: isDatePill ? 80 : 110,
+        height: 60,
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFFE0E400) : Colors.white,
           borderRadius: BorderRadius.circular(50),
@@ -442,7 +442,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                       Expanded(
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          //padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Wrap(
                             spacing: 16,
                             runSpacing: 16,

@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:flutter_justplay/features/bookings/screens/my_booking_screen.dart';
+// import 'package:flutter_justplay/features/bookings/presentation/screens/my_booking_screen.dart';
 // import 'package:flutter_justplay/features/events/screens/events_screen.dart';
 // import 'package:get/get.dart';
 //

@@ -173,8 +173,8 @@ class _EventCard extends StatelessWidget {
                 ],
               ),
               textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              maxLines: 1,  // Force single line
+              overflow: TextOverflow.ellipsis,  // Add ellipsis for overflow
             ),
             const SizedBox(height: 12),
             Text(
