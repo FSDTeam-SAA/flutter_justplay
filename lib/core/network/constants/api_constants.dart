@@ -1,6 +1,6 @@
 class ApiConstants {
   /// [Base Configuration]
-  // static const String baseDomain = 'http://10.10.5.53:5001'; // eshita
+  // static const String baseDomain = 'http://10.10.5.33:5001'; // eshita
   static const String baseDomain = 'https://backend-just-play.onrender.com'; // Live
   static const String baseUrl = '$baseDomain/api/v1';
 

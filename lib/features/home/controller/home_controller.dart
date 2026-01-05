@@ -37,11 +37,11 @@ class HomeController extends BaseController {
     final result = await _homeRepo.fetchCity();
 
     result.fold(
-          (fail) {
+      (fail) {
         setError(fail.message);
         DPrint.log('City fetch failed: ${fail.message}');
       },
-          (success) {
+      (success) {
         cities.value = success.data;
         //DPrint.log('City fetch successful: ${success.cities.length} cities loaded');
       },
@@ -53,11 +53,11 @@ class HomeController extends BaseController {
       final result = await _homeRepo.fetchSport(); // No parameters needed
 
       result.fold(
-            (failure) {
+        (failure) {
           Get.snackbar('Error', failure.message);
           sport.value = null;
         },
-            (response) {
+        (response) {
           sport.value = response.data;
         },
       );
@@ -76,11 +76,11 @@ class HomeController extends BaseController {
       final result = await _homeRepo.fetchPitch(); // No parameters
 
       result.fold(
-            (failure) {
+        (failure) {
           Get.snackbar('Error', failure.message);
           pitch.value = null;
         },
-            (response) {
+        (response) {
           pitch.value = response.data;
         },
       );
@@ -93,34 +93,51 @@ class HomeController extends BaseController {
   }
 
   Future<void> issue(String title, String description, String bookingId) async {
-    final request = IssueRequestModel(title: title, description: description, bookingId: bookingId);
+    final request = IssueRequestModel(
+      title: title,
+      description: description,
+      bookingId: bookingId,
+    );
 
     final result = await _homeRepo.issue(request);
 
     //DPrint.log("Login Response ${result.isRight()}");
 
     result.fold(
-          (fail) {
+      (fail) {
         setError(fail.message);
       },
-          (success) async {
+      (success) async {
         // Navigate to home screen
-            Get.to(() => MenuScreen());
+        Get.to(() => MenuScreen());
       },
     );
   }
 
-
-
-  Future<void> createBooking(String cityId, String sportId, String pitchId, String date, String timeSlot, int price, String currency) async {
-    final request = BookingRequest(cityId: cityId, sportId: sportId, pitchId: pitchId, date: date, timeSlot: timeSlot, price: price, currency: currency);
+  Future<void> createBooking(
+    String cityId,
+    String sportId,
+    String pitchId,
+    String date,
+    String timeSlot,
+    int price,
+    String currency,
+  ) async {
+    final request = BookingRequest(
+      cityId: cityId,
+      sportId: sportId,
+      pitchId: pitchId,
+      date: date,
+      timeSlot: timeSlot,
+      price: price,
+      currency: currency,
+    );
 
     final result = await _homeRepo.createBooking(request);
-
-    //DPrint.log("Login Response ${result.isRight()}");
+    
 
     result.fold(
-          (fail) {
+      (fail) {
         setError(fail.message);
       },
           (success) async {
@@ -131,21 +148,19 @@ class HomeController extends BaseController {
     );
   }
 
-  Future<void> changeCity(String city
-      ) async {
+  Future<void> changeCity(String city) async {
     _multiFormDataManager.addTextData("city", city);
     //_multiFormDataManager.addTextData("id", id);
-
 
     final formRequest = await _multiFormDataManager.toFormDataAsync();
 
     final result = await _profileRepository.updatePersonalInfo(formRequest);
 
     result.fold(
-          (fail) {
+      (fail) {
         DPrint.log('Personal info: ${fail.message}');
       },
-          (success) async {
+      (success) async {
         DPrint.log('Personal info: ${success.message}');
         Get.to(() => MenuScreen());
         _multiFormDataManager.clear();

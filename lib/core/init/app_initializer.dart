@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../di/service_locator.dart';
-import '../network/socket_client.dart';
 import 'hive_intialization.dart';
 
 class AppInitializer {
@@ -23,9 +22,5 @@ class AppInitializer {
     await HiveInitialization.initHive();
 
     setupServiceLocator();
-
-    SocketClient().connect();
-    // Wait for connection
-    SocketClient().onReady;
   }
 }
