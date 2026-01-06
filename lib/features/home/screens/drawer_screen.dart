@@ -12,10 +12,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/assets_const.dart' hide Icons;
 import '../../../core/utils/app_svg.dart';
+import '../../language/presentation/screens/languages_screen.dart';
 
 class MenuScreen extends StatefulWidget {
-
-
   const MenuScreen({Key? key}) : super(key: key);
 
   @override
@@ -40,7 +39,9 @@ class _MenuScreenState extends State<MenuScreen> {
 
       // Custom AppBar with yellow background
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE0E400), // Tall AppBar to fit everything
+        backgroundColor: const Color(
+          0xFFE0E400,
+        ), // Tall AppBar to fit everything
         automaticallyImplyLeading: false, // We control leading manually
         flexibleSpace: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -72,7 +73,9 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
 
                 GestureDetector(
-                  onTap: (){Get.to(() => ProfileEditScreen());},
+                  onTap: () {
+                    Get.to(() => ProfileEditScreen());
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 18.0, bottom: 7),
                     child: AppSvg(
@@ -90,84 +93,91 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
 
       // Body with scrollable menu items
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              const SizedBox(height: 32),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const SizedBox(height: 32),
+            // // Observe userInfo reactively
 
-              // Observe userInfo reactively
-              Obx(() {
-                final userInfo = _profileController.userInfo.value;
-                final userName = userInfo?.user.name ?? '';
-                return Text(
-                  'Hello $userName',
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
+            // Obx(() {
+            //   final userInfo = _profileController.userInfo.value;
+            //   final userName = userInfo?.user.name;
+            //   return Text(
+            //     'hello $userName',
+            //     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+            //   );
+            // }),
+            Obx(() {
+              final userInfo = _profileController.userInfo.value;
+              final userName = userInfo?.user.name ?? '';
+
+              return Text(
+                'hello'.trParams({'name': userName}),
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+            }),
+            SizedBox(height: 32),
+
+            _menuItem("bookings".tr, () {
+              Navigator.of(context).pop();
+              context.go('/bookings');
+            }),
+            _menuItem("change_city".tr, () {
+              Navigator.of(context).pop();
+              context.go('/utility/change_city');
+            }),
+            _menuItem("terms_and_conditions".tr, () {
+              Navigator.of(context).pop(); // Close menu
+              context.go('/utility/terms_condition');
+            }),
+
+            _menuItem("report_an_issue".tr, () {
+              Navigator.of(context).pop();
+              context.go('/utility/report_issue');
+            }),
+            _menuItem("language".tr, () {
+              Navigator.of(context).pop();
+              context.go('/utility/language');
+            }),
+
+            const Spacer(),
+
+            // Log Out Button
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: GestureDetector(
+                onTap: () {
+                  _authController.logout(context);
+                },
+                child: Container(
+                  height: 92,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 22),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(color: Colors.black, width: 1),
                   ),
-                );
-              }),
-
-              const SizedBox(height: 32),
-
-              _menuItem("Bookings", () {
-                Navigator.of(context).pop();
-                context.go('/bookings');
-              }),
-
-              _menuItem("Change City", () {
-                Navigator.of(context).pop();
-                context.go('/utility/change_city');
-              }),
-
-              _menuItem("Terms & Conditions", () {
-                Navigator.of(context).pop();
-                context.go('/utility/terms_condition');
-              }),
-
-              _menuItem("Report an Issue", () {
-                Navigator.of(context).pop();
-                context.go('/utility/report_issue');
-              }),
-
-              const SizedBox(height: 40),
-
-              // Log Out Button
-              Padding(
-                padding: const EdgeInsets.only(bottom: 50),
-                child: GestureDetector(
-                  onTap: () {
-                    _authController.logout(context);
-                  },
-                  child: Container(
-                    height: 92,
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 22),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(color: Colors.black, width: 1),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Log Out",
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                  child: Center(
+                    child: Text(
+                      "log_out".tr,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
                     ),
                   ),
                 ),
-              ),
+              ),)
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _menuItem(String title, VoidCallback onTap) {

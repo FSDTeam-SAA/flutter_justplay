@@ -38,13 +38,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (!_agreedToTerms) {
       // Optional: show a snackbar or error if terms not accepted
-      Get.snackbar('Required', 'Please agree to the Terms of Service and Privacy Policy');
+      Get.snackbar(
+        'Required',
+        'Please agree to the Terms of Service and Privacy Policy',
+      );
       return;
     }
 
     await _authController.register(
       _nameController.text.trim(),
-      _phoneController.text,context
+      _phoneController.text,
+      context,
     );
   }
 
@@ -57,10 +61,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           children: [
             // Background image
             Positioned.fill(
-              child: Image.asset(
-                Images.background,
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset(Images.background, fit: BoxFit.cover),
             ),
 
             // Main content (logo + titles) – centered vertically & horizontally
@@ -94,10 +95,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ),
 
                   const SizedBox(height: 35), // space between logo and title
-
                   // Title
-                  const Text(
-                    'Create an account',
+                  Text(
+                    'create_account_button'.tr,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 27,
@@ -108,8 +108,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const SizedBox(height: 12),
 
                   // Subtitle
-                  const Text(
-                    'Enter your details below to start playing',
+                  Text(
+                    'enter_details'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -117,20 +117,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: 27,),
+                  SizedBox(height: 27),
 
                   TextFormField(
                     controller: _nameController,
                     focusNode: _nameFocus,
                     keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                     decoration: context.primaryInputDecoration().copyWith(
-                      hintText: "Name",
-                        hintStyle: TextStyle(color: Color(0xFF828282))
+                      hintText: "name".tr,
+                      hintStyle: TextStyle(color: Color(0xFF828282)),
                     ),
                     validator: Validators.name,
                     autofillHints: const [AutofillHints.name],
@@ -138,19 +135,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         FocusScope.of(context).requestFocus(_nameFocus),
                   ),
 
-                  SizedBox(height: 24,),
+                  SizedBox(height: 24),
                   TextFormField(
                     controller: _phoneController,
                     focusNode: _phoneFocus,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                     decoration: context.primaryInputDecoration().copyWith(
                       hintText: "+ 964 0123 456 789",
-                        hintStyle: TextStyle(color: Color(0xFF828282))
+                      hintStyle: TextStyle(color: Color(0xFF828282)),
                     ),
                     validator: Validators.phone,
                     autofillHints: const [AutofillHints.telephoneNumber],
@@ -158,19 +152,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         FocusScope.of(context).requestFocus(_nameFocus),
                   ),
 
-                  SizedBox(height: 24,),
+                  SizedBox(height: 24),
                   TextFormField(
                     controller: _dobController,
                     focusNode: _dobFocus,
                     keyboardType: TextInputType.datetime,
                     textInputAction: TextInputAction.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                     decoration: context.primaryInputDecoration().copyWith(
-                        hintText: "Date of birth",
-                        hintStyle: TextStyle(color: Color(0xFF828282))
+                      hintText: 'date_of_birth'.tr,
+                      hintStyle: TextStyle(color: Color(0xFF828282)),
                     ),
                     validator: Validators.date,
                     autofillHints: const [AutofillHints.telephoneNumber],
@@ -178,73 +169,96 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         FocusScope.of(context).requestFocus(_dobFocus),
                   ),
 
-                  SizedBox(height: 24,),
+                  SizedBox(height: 24),
 
-                  PrimaryButton(text: 'Continue', onApiPressed: _submit,),
+                  PrimaryButton(text: 'continue'.tr, onApiPressed: _submit),
 
-                  SizedBox(height: 27,),
+                  SizedBox(height: 27),
 
-                  Text('By clicking continue, you agree to our',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14)),
-
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min, // 🔥 key line
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                      value: _agreedToTerms,
-                      activeColor: Colors.white,
-                      checkColor: Colors.black,
-                      side: const BorderSide(color: Colors.white, width: 1.5),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _agreedToTerms = value ?? false;
-                        });
-                      },
+                  Text(
+                    'by_clicking_continue'.tr,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
                     ),
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                        children: [
-                          TextSpan(
-                            text: 'Terms of Service',
-                            style: const TextStyle(decoration: TextDecoration.underline),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const TermsOfService()),
-                                );
-                              },
+                  ),
+
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min, // 🔥 key line
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: _agreedToTerms,
+                          activeColor: Colors.white,
+                          checkColor: Colors.black,
+                          side: const BorderSide(
+                            color: Colors.white,
+                            width: 1.5,
                           ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: const TextStyle(decoration: TextDecoration.underline),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const PrivacyAndPolicy()),
-                                );
-                              },
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _agreedToTerms = value ?? false;
+                            });
+                          },
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'terms_of_service'.tr,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const TermsOfService(),
+                                      ),
+                                    );
+                                  },
+                              ),
+                              TextSpan(text: ' an_d '.tr),
+                              TextSpan(
+                                text: 'privacy_policy'.tr,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const PrivacyAndPolicy(),
+                                      ),
+                                    );
+                                  },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 17.5,),
+                  ),
+                  SizedBox(height: 17.5),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {Get.to(() => LoginScreen());},
+                        onTap: () {
+                          Get.to(() => LoginScreen());
+                        },
                         child: Text(
-                          'Login',
+                          'login'.tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -253,15 +267,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         ),
                       ),
 
-                      SizedBox(height: 2), // 👈 Increased gap between text & underline
+                      SizedBox(
+                        height: 2,
+                      ), // 👈 Increased gap between text & underline
 
                       Container(
-                        width: 50,   // underline width
+                        width: 50, // underline width
                         height: 1.3, // thickness
                         color: Colors.white,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

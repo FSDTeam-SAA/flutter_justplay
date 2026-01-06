@@ -90,7 +90,7 @@ class _ChangeCityScreenState extends State<ChangeCityScreen> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(
-        title: const Text('Change City'),
+        // title:  Text('change_city'.tr),
         centerTitle: true,
       ),
       body: Stack(
@@ -105,9 +105,9 @@ class _ChangeCityScreenState extends State<ChangeCityScreen> {
             }
 
             if (cityList.isEmpty) {
-              return const Center(
+              return  Center(
                 child: Text(
-                  'No cities available',
+                  'no_cities_available'.tr,
                   style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               );
@@ -118,8 +118,8 @@ class _ChangeCityScreenState extends State<ChangeCityScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  const Text(
-                    'Change City',
+                   Text(
+                    'change_city'.tr,
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 30),
@@ -180,8 +180,8 @@ class _ChangeCityScreenState extends State<ChangeCityScreen> {
                     strokeWidth: 2.5,
                   ),
                 )
-                    : const Text(
-                  "Confirm Change",
+                    :  Text(
+                  "confirm_change".tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               );

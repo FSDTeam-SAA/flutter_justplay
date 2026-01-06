@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_justplay/core/common/widgets/app_scaffold.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:go_router/go_router.dart';
 
 class CancelledScreen extends StatefulWidget {
@@ -11,16 +13,16 @@ class CancelledScreen extends StatefulWidget {
 class _CancelledScreenState extends State<CancelledScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+    return AppScaffold(
+      // backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Your booking has been cancelled',
+               Text(
+                'your_booking_has_been_cancelled'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 30,
@@ -28,8 +30,8 @@ class _CancelledScreenState extends State<CancelledScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'The venue has been notified',
+               Text(
+                'the_venue_has_been_notified'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16.5, color: Colors.black, fontWeight: FontWeight.w700),
               ),
@@ -48,8 +50,8 @@ class _CancelledScreenState extends State<CancelledScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
-                    'Back To Bookings',
+                  child:  Text(
+                    'back_to_bookings'.tr,
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                   ),
                 ),
@@ -68,8 +70,8 @@ class _CancelledScreenState extends State<CancelledScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
-                    'Make New Booking',
+                  child:  Text(
+                    'make_new_booking'.tr,
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,

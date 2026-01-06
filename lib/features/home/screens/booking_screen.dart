@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/common/widgets/app_scaffold.dart';
 import '../../../../core/common/widgets/button_widgets.dart';
- // PitchesResponse & Pitch
+// PitchesResponse & Pitch
 import '../controller/home_controller.dart';
 import '../models/response/fetch_city_response_model.dart';
 import '../models/response/fetch_pitch_response_model.dart';
@@ -26,7 +26,9 @@ class _BookingScreenState extends State<BookingScreen> {
     if (selectedDate.value == null || selectedTimeSlot.value == null) return;
 
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate.value!);
-    final cleanedTimeSlot = selectedTimeSlot.value!.replaceAll('\n', ' ').trim();
+    final cleanedTimeSlot = selectedTimeSlot.value!
+        .replaceAll('\n', ' ')
+        .trim();
 
     homeController.createBooking(
       selectedCity.value!.id,
@@ -50,9 +52,21 @@ class _BookingScreenState extends State<BookingScreen> {
   var isReviewMode = false.obs;
 
   final List<String> timeSlots = [
-    '8:00\n am', '9:00\n am', '10:00\n am', '11:00\n am', '12:00\n pm',
-    '1:00\n pm', '2:00\n pm', '3:00\n pm', '4:00\n pm', '5:00\n pm',
-    '6:00\n pm', '7:00\n pm', '8:00\n pm', '9:00\n pm', '10:00\n pm',
+    '8:00\n am',
+    '9:00\n am',
+    '10:00\n am',
+    '11:00\n am',
+    '12:00\n pm',
+    '1:00\n pm',
+    '2:00\n pm',
+    '3:00\n pm',
+    '4:00\n pm',
+    '5:00\n pm',
+    '6:00\n pm',
+    '7:00\n pm',
+    '8:00\n pm',
+    '9:00\n pm',
+    '10:00\n pm',
   ];
 
   final Set<String> bookedSlots = {'12:00 pm', '3:00 pm', '7:00 pm'};
@@ -65,18 +79,7 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-
-    // === IMPORTANT: Reset everything to initial state ===
-    currentStep.value = 0;
-    isReviewMode.value = false;
-
-    selectedCity.value = null;
-    selectedSport.value = null;
-    selectedPitch.value = null;
-    selectedDate.value = null;
-    selectedTimeSlot.value = null;
-
-    // Fetch cities only if not already loaded
+    // Fetch cities when screen opens
     if (homeController.cities.value == null) {
       homeController.fetchCity();
     }
@@ -102,26 +105,31 @@ class _BookingScreenState extends State<BookingScreen> {
         child: Center(
           child: isDatePill
               ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: text.split('\n').map((line) => Text(
-              line,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.3,
-                fontWeight: FontWeight.w700,
-                color: isBooked ? Colors.grey[600] : Colors.black,
-              ),
-            )).toList(),
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: text
+                      .split('\n')
+                      .map(
+                        (line) => Text(
+                          line,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14.3,
+                            fontWeight: FontWeight.w700,
+                            color: isBooked ? Colors.grey[600] : Colors.black,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                )
               : Text(
-            text,
-            style: TextStyle(
-              fontSize: 14.3,
-              fontWeight: FontWeight.w600,
-              color: isBooked ? Colors.grey[600] : Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
+                  text,
+                  style: TextStyle(
+                    fontSize: 14.3,
+                    fontWeight: FontWeight.w600,
+                    color: isBooked ? Colors.grey[600] : Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
         ),
       ),
     );
@@ -144,16 +152,17 @@ class _BookingScreenState extends State<BookingScreen> {
                 String getTabText(int index) {
                   switch (index) {
                     case 0:
-                      return selectedCity.value?.name ?? 'City';
+                      return selectedCity.value?.name ?? 'city'.tr;
                     case 1:
-                      return selectedSport.value?.name ?? 'Sport';
+                      return selectedSport.value?.name ?? 'sport'.tr;
                     case 2:
-                      return selectedPitch.value?.name ?? 'Pitch';
+                      return selectedPitch.value?.name ?? 'pitch'.tr;
                     case 3:
-                      if (selectedDate.value != null && selectedTimeSlot.value != null) {
+                      if (selectedDate.value != null &&
+                          selectedTimeSlot.value != null) {
                         return '${DateFormat('d MMM').format(selectedDate.value!)} • ${selectedTimeSlot.value!.replaceAll('\n', ' ').trim()}';
                       }
-                      return 'Time & Date';
+                      return 'time_and_date'.tr;
                     default:
                       return '';
                   }
@@ -165,14 +174,19 @@ class _BookingScreenState extends State<BookingScreen> {
                     final isCurrent = currentStep.value == i;
                     return Expanded(
                       child: GestureDetector(
-                        onTap: currentStep.value >= i ? () => currentStep.value = i : null,
+                        onTap: currentStep.value >= i
+                            ? () => currentStep.value = i
+                            : null,
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: isActive ? Colors.black : Colors.white,
                             borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: const Color(0xFFE0E400), width: isActive ? 0 : 1.5),
+                            border: Border.all(
+                              color: const Color(0xFFE0E400),
+                              width: isActive ? 0 : 1.5,
+                            ),
                           ),
                           child: Text(
                             getTabText(i),
@@ -202,49 +216,72 @@ class _BookingScreenState extends State<BookingScreen> {
                   return Column(
                     children: [
                       const SizedBox(height: 20),
-                      const Text('Select Your City', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      Text(
+                        'select_your_city'.tr,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Expanded(
                         child: homeController.isLoading.value
                             ? const Center(child: CircularProgressIndicator())
-                            : homeController.cities.value == null || homeController.cities.value!.cities.isEmpty
-                            ? const Center(child: Text('No cities available'))
+                            : homeController.cities.value == null ||
+                                  homeController.cities.value!.cities.isEmpty
+                            ? Center(child: Text('no_cities_available'.tr))
                             : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: homeController.cities.value!.cities.length,
-                          itemBuilder: (context, index) {
-                            final city = homeController.cities.value!.cities[index];
-                            return GestureDetector(
-                              onTap: () {
-                                selectedCity.value = city;
-                                selectedSport.value = null;
-                                selectedPitch.value = null;
-                                homeController.fetchSport(); // Fetch sports
-                                currentStep.value = 1;
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 20),
-                                height: 220,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: const Color(0xFFE0E400), width: 4),
-                                  image: DecorationImage(
-                                    image: NetworkImage(city.image.url),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    city.name,
-                                    style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, shadows: [
-                                      Shadow(color: Colors.black, blurRadius: 10),
-                                    ]),
-                                  ),
-                                ),
+                                padding: const EdgeInsets.all(16),
+                                itemCount:
+                                    homeController.cities.value!.cities.length,
+                                itemBuilder: (context, index) {
+                                  final city = homeController
+                                      .cities
+                                      .value!
+                                      .cities[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      selectedCity.value = city;
+                                      selectedSport.value = null;
+                                      selectedPitch.value = null;
+                                      homeController
+                                          .fetchSport(); // Fetch sports
+                                      currentStep.value = 1;
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 20),
+                                      height: 220,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                          color: const Color(0xFFE0E400),
+                                          width: 4,
+                                        ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(city.image.url),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          city.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ],
                   );
@@ -256,46 +293,64 @@ class _BookingScreenState extends State<BookingScreen> {
                   return Column(
                     children: [
                       const SizedBox(height: 20),
-                      const Text('Select Your Sport', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      Text(
+                        'select_your_sport'.tr,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Expanded(
                         child: sports.isEmpty
-                            ? const Center(child: Text('No sports available'))
+                            ? Center(child: Text('no_sports_available'.tr))
                             : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: sports.length,
-                          itemBuilder: (context, index) {
-                            final sport = sports[index];
-                            return GestureDetector(
-                              onTap: () {
-                                selectedSport.value = sport;
-                                selectedPitch.value = null;
-                                homeController.fetchPitch(); // Fetch pitches (add filters later)
-                                currentStep.value = 2;
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 20),
-                                height: 220,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: const Color(0xFFE0E400), width: 4),
-                                  image: DecorationImage(
-                                    image: NetworkImage(sport.image.url),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    sport.name,
-                                    style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, shadows: [
-                                      Shadow(color: Colors.black, blurRadius: 10),
-                                    ]),
-                                  ),
-                                ),
+                                padding: const EdgeInsets.all(16),
+                                itemCount: sports.length,
+                                itemBuilder: (context, index) {
+                                  final sport = sports[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      selectedSport.value = sport;
+                                      selectedPitch.value = null;
+                                      homeController
+                                          .fetchPitch(); // Fetch pitches (add filters later)
+                                      currentStep.value = 2;
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 20),
+                                      height: 220,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                          color: const Color(0xFFE0E400),
+                                          width: 4,
+                                        ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(sport.image.url),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          sport.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black,
+                                                blurRadius: 10,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ],
                   );
@@ -307,58 +362,103 @@ class _BookingScreenState extends State<BookingScreen> {
                   return Column(
                     children: [
                       const SizedBox(height: 20),
-                      const Text('Select Your Pitch', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                      Text(
+                        'select_your_pitch'.tr,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Expanded(
                         child: pitches.isEmpty
-                            ? const Center(child: Text('No pitches available'))
+                            ? Center(child: Text('no_pitches_available'.tr))
                             : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: pitches.length,
-                          itemBuilder: (context, index) {
-                            final pitch = pitches[index];
-                            return GestureDetector(
-                              onTap: () {
-                                selectedPitch.value = pitch;
-                                currentStep.value = 3;
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(color: const Color(0xFFE0E400), width: 3),
-                                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 6))],
-                                ),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(16),
+                                itemCount: pitches.length,
+                                itemBuilder: (context, index) {
+                                  final pitch = pitches[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      selectedPitch.value = pitch;
+                                      currentStep.value = 3;
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(
+                                          color: const Color(0xFFE0E400),
+                                          width: 3,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.08,
+                                            ),
+                                            blurRadius: 12,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
                                       child: Column(
                                         children: [
-                                          Text(pitch.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700), textAlign: TextAlign.center),
-                                          const SizedBox(height: 12),
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.location_on_outlined),
-                                              const SizedBox(width: 8),
-                                              Expanded(child: Text(pitch.location)),
-                                              Text('${pitch.price} ${pitch.currency}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  pitch.name,
+                                                  style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons
+                                                          .location_on_outlined,
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        pitch.location,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${pitch.price} ${pitch.currency}',
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
+                                                  bottom: Radius.circular(42),
+                                                ),
+                                            child: Image.network(
+                                              pitch.image.url,
+                                              height: 96,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(42)),
-                                      child: Image.network(pitch.image.url, height: 96, width: double.infinity, fit: BoxFit.cover),
-                                    ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ],
                   );
@@ -368,107 +468,139 @@ class _BookingScreenState extends State<BookingScreen> {
                 if (step == 3) {
                   if (isReviewMode.value) {
                     final pitch = selectedPitch.value!;
-                    final dateStr = selectedDate.value != null ? DateFormat('EEEE d MMMM').format(selectedDate.value!) : '';
-                    final timeStr = selectedTimeSlot.value?.replaceAll('\n', ' ').trim() ?? '';
+                    final currentLocale = Get.locale?.languageCode ?? 'en';
 
-                    return SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Confirm Booking',
-                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: 30),
+                    // Optional fallback if intl doesn't fully support a locale
+                    final dateFormatLocale = currentLocale == 'ku'
+                        ? 'ar'
+                        : currentLocale;
 
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFE0E400), width: 4),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(26),
-                            child: Stack(
-                              children: [
-                                Image.network(
-                                  pitch.image.url,
-                                  height: 220,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                                Positioned(
-                                  bottom: 16,
-                                  left: 16,
-                                  child: Text(
-                                    pitch.name,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [Shadow(blurRadius: 10, color: Colors.black)],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 16,
-                                  right: 16,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFE0E400),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Text(
-                                      '${pitch.price} ${pitch.currency}',
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                    final dateStr = selectedDate.value != null
+                        ? DateFormat(
+                            'EEEE d MMMM',
+                            dateFormatLocale,
+                          ).format(selectedDate.value!)
+                        : '';
+
+                    // final dateStr = selectedDate.value != null
+                    //     ? DateFormat('EEEE d MMMM').format(selectedDate.value!)
+                    //     : '';
+                    final timeStr =
+                        selectedTimeSlot.value?.replaceAll('\n', ' ').trim() ??
+                        '';
+
+                    return Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Text(
+                            'confirm_booking'.tr,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFE0E400), width: 4),
-                            borderRadius: BorderRadius.circular(50),
+                          const SizedBox(height: 30),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xFFE0E400),
+                                width: 4,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(26),
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    pitch.image.url,
+                                    height: 220,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Positioned(
+                                    bottom: 16,
+                                    left: 16,
+                                    child: Text(
+                                      pitch.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            blurRadius: 10,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 16,
+                                    right: 16,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE0E400),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Text(
+                                        '${pitch.price} ${pitch.currency}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          child: Text(
-                            '$dateStr  $timeStr',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                          const SizedBox(height: 30),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xFFE0E400),
+                                width: 4,
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Text(
+                              '$dateStr  $timeStr',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                        ),
-
-                        const SizedBox(height: 40),
-
-                        SecondaryButton(
-                          text: 'Confirm Booking',
-                          onSimplePressed: () {
-                            _submit();
-                            context.push(
-                              '/home/booking_confirm',
-                              extra: {
-                                'pitch': selectedPitch.value,
-                                'date': selectedDate.value,
-                                'time': selectedTimeSlot.value,
-                              },
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                          const Spacer(),
+                          SecondaryButton(
+                            text: 'confirm_booking'.tr,
+                            onSimplePressed: () {
+                              _submit();
+                              context.push(
+                                '/home/booking_confirm',
+                                extra: {
+                                  'pitch'.tr: selectedPitch.value,
+                                  'date'.tr: selectedDate.value,
+                                  'time'.tr: selectedTimeSlot.value,
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     );
                   }
 
                   // Normal time selection
+
                   return Column(
                     children: [
                       Padding(
@@ -476,9 +608,23 @@ class _BookingScreenState extends State<BookingScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Center(child: Text('Time & Date', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700))),
+                            Center(
+                              child: Text(
+                                'time_and_date'.tr,
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 20),
-                            const Text('Select Date', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                            Text(
+                              'select_date'.tr,
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const SizedBox(height: 10),
                             SizedBox(
                               height: 140,
@@ -487,17 +633,62 @@ class _BookingScreenState extends State<BookingScreen> {
                                 itemCount: dateOptions.length,
                                 itemBuilder: (context, i) {
                                   final date = dateOptions[i];
-                                  final isSelected = selectedDate.value != null && DateTime(date.year, date.month, date.day) == DateTime(selectedDate.value!.year, selectedDate.value!.month, selectedDate.value!.day);
-                                  final label = i == 0 ? 'Today' : DateFormat('EEE').format(date);
+                                  // final locale =
+                                  //     Get.locale?.languageCode ?? 'en';
+                                  final currentLocale =
+                                      Get.locale?.languageCode ?? 'en';
+
+                                  // Fallback "ku" to "ar" for date formatting only
+                                  final dateFormatLocale = currentLocale == 'ku'
+                                      ? 'ar'
+                                      : currentLocale;
+
+                                  final isSelected =
+                                      selectedDate.value != null &&
+                                      DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                          ) ==
+                                          DateTime(
+                                            selectedDate.value!.year,
+                                            selectedDate.value!.month,
+                                            selectedDate.value!.day,
+                                          );
+                                  final label = i == 0
+                                      ? 'today'.tr
+                                      : DateFormat(
+                                          'EEE',
+                                          dateFormatLocale,
+                                        ).format(date);
+
+                                  // final label = i == 0
+                                  //     ? 'today'.tr
+                                  //     : DateFormat('EEE', locale).format(date);
+
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: _buildPill(text: '$label\n${date.day}', isSelected: isSelected, onTap: () => selectedDate.value = date, isDatePill: true),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: _buildPill(
+                                      text: '$label\n${date.day}',
+                                      isSelected: isSelected,
+                                      onTap: () => selectedDate.value = date,
+                                      isDatePill: true,
+                                    ),
                                   );
                                 },
                               ),
                             ),
+
                             const SizedBox(height: 30),
-                            const Text('Select Time', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                            Text(
+                              'select_time'.tr,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -514,17 +705,23 @@ class _BookingScreenState extends State<BookingScreen> {
                               return _buildPill(
                                 text: slot,
                                 isSelected: selectedTimeSlot.value == slot,
-                                onTap: isBooked ? null : () => selectedTimeSlot.value = slot,
+                                onTap: isBooked
+                                    ? null
+                                    : () => selectedTimeSlot.value = slot,
                                 isBooked: isBooked,
                               );
                             }).toList(),
                           ),
                         ),
                       ),
-                      if (selectedDate.value != null && selectedTimeSlot.value != null)
+                      if (selectedDate.value != null &&
+                          selectedTimeSlot.value != null)
                         Padding(
                           padding: const EdgeInsets.all(18),
-                          child: SecondaryButton(text: 'Review Booking', onSimplePressed: () => isReviewMode.value = true),
+                          child: SecondaryButton(
+                            text: 'review_booking'.tr,
+                            onSimplePressed: () => isReviewMode.value = true,
+                          ),
                         ),
                     ],
                   );

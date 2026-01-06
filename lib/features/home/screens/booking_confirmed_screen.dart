@@ -26,10 +26,11 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
     // Safely retrieve extra data from GoRouter
     final extra = GoRouterState.of(context).extra as Map<String, dynamic>?;
 
-    if (extra != null && selectedPitch.value == null) { // Only set once
-      selectedPitch.value = extra['pitch'] as Pitch?;
-      selectedDate.value = extra['date'] as DateTime?;
-      selectedTimeSlot.value = extra['time'] as String?;
+    if (extra != null && selectedPitch.value == null) {
+      // Only set once
+      selectedPitch.value = extra['pitch'.tr] as Pitch?;
+      selectedDate.value = extra['date'.tr] as DateTime?;
+      selectedTimeSlot.value = extra['time'.tr] as String?;
     }
   }
 
@@ -57,8 +58,6 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
   // apnar creame use korlam skin soft hoye gese nice creamm
   // reply den apuuuuuuuuu
 
-
-
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -73,138 +72,215 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
             final timeSlot = selectedTimeSlot.value;
 
             if (pitch == null || date == null || timeSlot == null) {
-              return const Center(child: Text('Booking details not found'));
+              return Center(child: Text('booking_details_not_found'.tr));
             }
 
             final formattedDate = DateFormat('EEEE d MMMM').format(date);
             final timeDisplay = timeSlot.replaceAll('\n', ' ').trim();
 
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Booking Confirmed!',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
+            return Column(
+              children: [
+                Text(
+                  'booking_confirmed'.tr,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'please_pay_venue_on_arrival'.tr,
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'Please pay venue on arrival',
-                    style: TextStyle(
-                        fontSize: 16.5, fontWeight: FontWeight.w400, color: Colors.black),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 25),
+                ),
+                const SizedBox(height: 25),
 
-                  // Pitch Image Card
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                // Pitch Image Card with Yellow Border
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      child: Stack(
-                        children: [
-                          Image.network(
-                            pitch.image.url,
-                            height: 220,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              height: 220,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.error),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  'Please pay venue on arrival',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 25),
+
+                // Pitch Image Card
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          pitch.image.url,
+                          height: 220,
+                          color: Colors.grey[300],
+                          // child: const Icon(Icons.error),
+                        ),
+
+                        Positioned(
+                          bottom: 16,
+                          left: 20,
+                          child: Text(
+                            pitch.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22.4,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(color: Colors.black, blurRadius: 10),
+                              ],
                             ),
                           ),
-                          Positioned(
-                            bottom: 16,
-                            left: 20,
+                        ),
+                        Positioned(
+                          bottom: 16,
+                          right: 20,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE0E400),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                             child: Text(
                               pitch.name,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 22.4,
                                 fontWeight: FontWeight.bold,
-                                shadows: [Shadow(color: Colors.black, blurRadius: 10)],
+                                shadows: [
+                                  Shadow(color: Colors.black, blurRadius: 10),
+                                ],
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 16,
-                            right: 20,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE0E400),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Text(
-                                '${pitch.price} ${pitch.currency}',
-                                style: const TextStyle(
-                                  fontSize: 16.12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                        ),
+                        Positioned(
+                          bottom: 16,
+                          right: 20,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE0E400),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Text(
+                              '${pitch.price} ${pitch.currency}',
+                              style: const TextStyle(
+                                fontSize: 16.12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // Date & Time Pill
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$formattedDate  $timeDisplay',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
                     ),
                   ),
+                ),
 
-                  const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
-                  // Date & Time Pill
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                // Date & Time Pill
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: const Color(0xFFE0E400),
+                      width: 4,
                     ),
-                    child: Center(
-                      child: Text(
-                        '$formattedDate  $timeDisplay',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$formattedDate  $timeDisplay',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
                     ),
                   ),
+                ),
 
-                  const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
-                  // Make Another Booking Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 70,
-                    child: ElevatedButton(
-                      onPressed: () => _resetAndNavigate(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E1E1E),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(35),
-                        ),
+                // Make Another Booking Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 70,
+                  child: ElevatedButton(
+                    onPressed: () => _resetAndNavigate(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1E1E1E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(35),
                       ),
-                      child: const Text(
-                        'Make Another Booking',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    ),
+
+                    child: Text(
+                      'make_another_booking'.tr,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+              ],
             );
           }),
         ),

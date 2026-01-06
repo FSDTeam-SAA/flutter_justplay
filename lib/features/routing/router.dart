@@ -5,6 +5,7 @@ import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
 import 'package:flutter_justplay/features/home/screens/booking_confirmed_screen.dart';
 import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
 import 'package:flutter_justplay/features/home/screens/terms_and_conditions_screen.dart';
+import 'package:flutter_justplay/features/language/presentation/screens/languages_screen.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
@@ -150,6 +151,11 @@ final GoRouter router = GoRouter(
                   path: 'report_issue',
                   name: 'report_issue',
                   builder: (context, state) => const ReportAnIssue(),
+                ),
+                 GoRoute(
+                  path: 'language',
+                  name: 'language',
+                  builder: (context, state) => const LanguageScreen(),
                 ),
               ],
             ),
