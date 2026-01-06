@@ -65,7 +65,18 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch cities when screen opens
+
+    // === IMPORTANT: Reset everything to initial state ===
+    currentStep.value = 0;
+    isReviewMode.value = false;
+
+    selectedCity.value = null;
+    selectedSport.value = null;
+    selectedPitch.value = null;
+    selectedDate.value = null;
+    selectedTimeSlot.value = null;
+
+    // Fetch cities only if not already loaded
     if (homeController.cities.value == null) {
       homeController.fetchCity();
     }
@@ -360,50 +371,100 @@ class _BookingScreenState extends State<BookingScreen> {
                     final dateStr = selectedDate.value != null ? DateFormat('EEEE d MMMM').format(selectedDate.value!) : '';
                     final timeStr = selectedTimeSlot.value?.replaceAll('\n', ' ').trim() ?? '';
 
-                    return Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          const Text('Confirm Booking', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700)),
-                          const SizedBox(height: 30),
-                          Container(
-                            decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE0E400), width: 4), borderRadius: BorderRadius.circular(30)),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(26),
-                              child: Stack(
-                                children: [
-                                  Image.network(pitch.image.url, height: 220, width: double.infinity, fit: BoxFit.cover),
-                                  Positioned(bottom: 16, left: 16, child: Text(pitch.name, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, shadows: [Shadow(blurRadius: 10, color: Colors.black)]))),
-                                  Positioned(bottom: 16, right: 16, child: Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: const Color(0xFFE0E400), borderRadius: BorderRadius.circular(30)), child: Text('${pitch.price} ${pitch.currency}', style: const TextStyle(fontWeight: FontWeight.bold)))),
-                                ],
-                              ),
+                    return SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Confirm Booking',
+                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 30),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  pitch.image.url,
+                                  height: 220,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  bottom: 16,
+                                  left: 16,
+                                  child: Text(
+                                    pitch.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [Shadow(blurRadius: 10, color: Colors.black)],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 16,
+                                  right: 16,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE0E400),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Text(
+                                      '${pitch.price} ${pitch.currency}',
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 30),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE0E400), width: 4), borderRadius: BorderRadius.circular(50)),
-                            child: Text('$dateStr  $timeStr', textAlign: TextAlign.center, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFFE0E400), width: 4),
+                            borderRadius: BorderRadius.circular(50),
                           ),
-                          const Spacer(),
-                          SecondaryButton(
-                            text: 'Confirm Booking',
-                            onSimplePressed: () {
-                              _submit();
-                              context.push(
-                                '/home/booking_confirm',
-                                extra: {
-                                  'pitch': selectedPitch.value,
-                                  'date': selectedDate.value,
-                                  'time': selectedTimeSlot.value,
-                                },
-                              );
-                            },
+                          child: Text(
+                            '$dateStr  $timeStr',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                        ),
+
+                        const SizedBox(height: 40),
+
+                        SecondaryButton(
+                          text: 'Confirm Booking',
+                          onSimplePressed: () {
+                            _submit();
+                            context.push(
+                              '/home/booking_confirm',
+                              extra: {
+                                'pitch': selectedPitch.value,
+                                'date': selectedDate.value,
+                                'time': selectedTimeSlot.value,
+                              },
+                            );
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                     );
                   }
 

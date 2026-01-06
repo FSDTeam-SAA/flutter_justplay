@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/common/widgets/app_scaffold.dart';
 import '../controller/event_controller.dart';
@@ -134,7 +135,11 @@ class _EventCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.to(() => EventDetailScreen(event: event));
+        context.go(
+          '/events/event-detail',
+          extra: event,  // This passes the selected Event to the detail screen
+        );
+        // Get.to(() => EventDetailScreen(event: event));
       },
       child: Container(
         height: 173,

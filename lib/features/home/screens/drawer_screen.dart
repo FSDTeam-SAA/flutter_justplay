@@ -90,72 +90,81 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
 
       // Body with scrollable menu items
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 32),
-            // Observe userInfo reactively
-            Obx(() {
-              final userInfo = _profileController.userInfo.value;
-              final userName = userInfo?.user.name;
-              return Text(
-                'Hello $userName',
-                style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
-              );
-            }),
-            SizedBox(height: 32,),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const SizedBox(height: 32),
 
-            _menuItem("Bookings", () {
-              Navigator.of(context).pop();
-              context.go('/bookings');
-            }),
-            _menuItem("Change City", () {
-              Navigator.of(context).pop();
-              context.go('/utility/change_city');
-            }),
-            _menuItem("Terms & Conditions", () {
-              Navigator.of(context).pop(); // Close menu
-              context.go('/utility/terms_condition');
-            }),
-
-            _menuItem("Report an Issue", () {
-              Navigator.of(context).pop();
-              context.go('/utility/report_issue');
-            }),
-
-            const Spacer(),
-
-            // Log Out Button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: GestureDetector(
-                onTap: () {
-                  _authController.logout(context);
-                },
-                child: Container(
-                  height: 92,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: Colors.black, width: 1),
+              // Observe userInfo reactively
+              Obx(() {
+                final userInfo = _profileController.userInfo.value;
+                final userName = userInfo?.user.name ?? '';
+                return Text(
+                  'Hello $userName',
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
                   ),
-                  child: const Center(
-                    child: Text(
-                      "Log Out",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                );
+              }),
+
+              const SizedBox(height: 32),
+
+              _menuItem("Bookings", () {
+                Navigator.of(context).pop();
+                context.go('/bookings');
+              }),
+
+              _menuItem("Change City", () {
+                Navigator.of(context).pop();
+                context.go('/utility/change_city');
+              }),
+
+              _menuItem("Terms & Conditions", () {
+                Navigator.of(context).pop();
+                context.go('/utility/terms_condition');
+              }),
+
+              _menuItem("Report an Issue", () {
+                Navigator.of(context).pop();
+                context.go('/utility/report_issue');
+              }),
+
+              const SizedBox(height: 40),
+
+              // Log Out Button
+              Padding(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: GestureDetector(
+                  onTap: () {
+                    _authController.logout(context);
+                  },
+                  child: Container(
+                    height: 92,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 22),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Log Out",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

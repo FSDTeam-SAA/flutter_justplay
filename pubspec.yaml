@@ -59,6 +59,7 @@ flutter:
     - family: Ligconsolata
       fonts:
         - asset: assets/fonts/Ligconsolata-Regular.ttf
+          weight: 400
         - asset: assets/fonts/Ligconsolata-Bold.ttf
           weight: 700
 

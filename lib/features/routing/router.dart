@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/features/bookings/presentation/screens/my_booking_screen.dart';
+import 'package:flutter_justplay/features/events/screens/event_details_screen.dart';
 import 'package:flutter_justplay/features/home/screens/Report_an_issue.dart';
 import 'package:flutter_justplay/features/home/screens/booking_confirmed_screen.dart';
 import 'package:flutter_justplay/features/home/screens/change_city_screen.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_justplay/features/events/screens/events_screen.dart';
 import 'package:flutter_justplay/features/auth/screens/create_account_screen.dart';
 import 'package:flutter_justplay/features/auth/screens/login_screen.dart';
 import '../bookings/presentation/screens/booking_cancel_screen.dart';
+import '../events/models/response/get_event_list_response_model.dart';
 import 'navigation_menu_shell.dart';
 
 // ← ADD THIS LINE ONLY
@@ -57,7 +59,9 @@ final GoRouter router = GoRouter(
                 GoRoute(
                   path: 'booking',
                   name: 'booking-flow',
-                  builder: (context, state) => const BookingScreen(),
+                  builder: (context, state) => BookingScreen(
+                    key: UniqueKey(), // This forces fresh instance every time
+                  ),
                 ),
                 GoRoute(
                   path: 'booking_confirm',
@@ -93,12 +97,31 @@ final GoRouter router = GoRouter(
         ),
 
         // Branch 2: Events
+        // Branch 2: Events
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/events',
               name: 'events',
               builder: (context, state) => const EventsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'event-detail',  // Fixed: no space, use hyphen
+                  name: 'event-detail',  // Consistent naming
+                  builder: (context, state) {
+                    // Safely extract the passed Event object
+                    final event = state.extra as Event?;  // Adjust type if Event is from your model
+                    if (event == null) {
+                      // Optional: Handle error (e.g., go back or show error)
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        context.go('/events');
+                      });
+                      return const Scaffold(body: Center(child: Text('Event not found')));
+                    }
+                    return EventDetailScreen(event: event);
+                  },
+                ),
+              ],
             ),
           ],
         ),
