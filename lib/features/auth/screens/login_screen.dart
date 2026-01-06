@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_justplay/core/utils/app_svg.dart';
 import 'package:flutter_justplay/features/auth/screens/create_account_screen.dart';
-import 'package:flutter_justplay/navigation_menu.dart';
+
 import 'package:flutx_core/core/validation/validators.dart';
 import 'package:flutx_core/flutx_core.dart';
 import 'package:get/get.dart';
@@ -9,6 +9,7 @@ import '../../../core/common/widgets/button_widgets.dart';
 import '../../../core/constants/assets_const.dart';
 import '../../../core/extensions/input_decoration_extensions.dart';
 import '../controller/auth_controller.dart';
+import '../widgets/language_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Positioned.fill(
               child: Image.asset(Images.background, fit: BoxFit.cover),
             ),
+            Positioned(top: 70, left: 0, right: 0, child: LanguageSwitchRow()),
 
             // Main content (logo + titles) – centered vertically & horizontally
             Padding(
@@ -94,8 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 12),
 
                   // Subtitle
-                  const Text(
-                    'Enter your log in details below',
+                   Text(
+                    'enter_login_details'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

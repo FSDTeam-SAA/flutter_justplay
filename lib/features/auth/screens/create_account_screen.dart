@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../core/common/widgets/button_widgets.dart';
 import '../../../core/constants/assets_const.dart';
 import '../../../core/extensions/input_decoration_extensions.dart';
+import '../widgets/language_widgets.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -63,6 +64,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             Positioned.fill(
               child: Image.asset(Images.background, fit: BoxFit.cover),
             ),
+
+            // 🔥 Language buttons (TOP)
+            Positioned(top: 70, left: 0, right: 0, child: LanguageSwitchRow()),
 
             // Main content (logo + titles) – centered vertically & horizontally
             Padding(
