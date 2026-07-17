@@ -1,0 +1,209 @@
+// screens/menu_screen.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_justplay/features/auth/controller/auth_controller.dart';
+import 'package:flutter_justplay/features/home/controller/profile_controller.dart';
+
+import 'package:flutter_justplay/features/home/screens/profile_screen.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/constants/assets_const.dart' hide Icons;
+import '../../../core/utils/app_svg.dart';
+
+class MenuScreen extends StatefulWidget {
+  const MenuScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  final ProfileController _profileController = Get.find<ProfileController>();
+  final AuthController _authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final userName = _profileController.userInfo.value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //backgroundColor: Colors.white,
+
+      // Custom AppBar with yellow background
+      appBar: AppBar(
+        backgroundColor: const Color(
+          0xFFE0E400,
+        ), // Tall AppBar to fit everything
+        automaticallyImplyLeading: false, // We control leading manually
+        flexibleSpace: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Close button
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.black, size: 35),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                // Avatar
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0, bottom: 7),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: AppSvg(
+                      asset: Images.logo,
+                      height: 24,
+                      width: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => ProfileEditScreen());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 18.0, bottom: 7),
+                    child: AppSvg(
+                      asset: Images.profile,
+                      height: 24,
+                      width: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+
+      // Body with scrollable menu items
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const SizedBox(height: 32),
+            // // Observe userInfo reactively
+
+            // Obx(() {
+            //   final userInfo = _profileController.userInfo.value;
+            //   final userName = userInfo?.user.name;
+            //   return Text(
+            //     'hello $userName',
+            //     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+            //   );
+            // }),
+            Obx(() {
+              final userInfo = _profileController.userInfo.value;
+              final userName = userInfo?.user.name ?? '';
+
+              return Text(
+                'hello'.trParams({'name': userName}),
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+            }),
+            SizedBox(height: 32),
+
+            _menuItem("bookings".tr, () {
+              Navigator.of(context).pop();
+              context.go('/bookings');
+            }),
+            _menuItem("change_city".tr, () {
+              Navigator.of(context).pop();
+              // push (not go): change_city is nested under the blank
+              // '/utility' shell route, so go() would leave that empty
+              // parent on the stack and the back button would land on it.
+              context.push('/utility/change_city');
+            }),
+            _menuItem("terms_and_conditions".tr, () {
+              Navigator.of(context).pop(); // Close menu
+              context.push('/utility/terms_condition');
+            }),
+
+            _menuItem("report_an_issue".tr, () {
+              Navigator.of(context).pop();
+              context.push('/utility/report_issue');
+            }),
+
+            // _menuItem("language".tr, () {
+            //   Navigator.of(context).pop();
+            //   context.go('/utility/language');
+            // }),
+            const Spacer(),
+
+            // Log Out Button
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: GestureDetector(
+                onTap: () {
+                  _authController.logout(context);
+                },
+                child: Container(
+                  height: 92,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 22),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "log_out".tr,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+              ),)
+            ],
+          ),
+        ),
+      );
+  }
+
+  Widget _menuItem(String title, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 92,
+          padding: const EdgeInsets.symmetric(vertical: 25),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEFF198),
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Center(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
