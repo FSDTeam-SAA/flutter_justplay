@@ -990,8 +990,14 @@ class _BookingScreenState extends State<BookingScreen> {
                               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 10),
+                            // Matches the pill's own height (60, see
+                            // _buildPill) plus a little breathing room — a
+                            // horizontal ListView gives its items a *tight*
+                            // cross-axis constraint, so a taller SizedBox
+                            // here stretches the pill instead of leaving it
+                            // at its intended compact size.
                             SizedBox(
-                              height: 140,
+                              height: 100,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: dateOptions.length,

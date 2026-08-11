@@ -1,9 +1,8 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-
 class ApiConstants {
   /// [Base Configuration]
+  static const String _defaultBaseDomain =
+      'https://backend-just-play-1.onrender.com';
+
   static const String _baseDomainOverride = String.fromEnvironment(
     'BASE_DOMAIN',
     defaultValue: '',
@@ -16,18 +15,9 @@ class ApiConstants {
           : _baseDomainOverride;
     }
 
-    if (kIsWeb) {
-      return 'http://127.0.0.1:5001';
-    }
-
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5001';
-    }
-
-    return 'http://127.0.0.1:5001';
+    return _defaultBaseDomain;
   }
 
-   // static const String liveBaseDomain = 'https://backend-just-play.onrender.com'; // Live
   static String get baseUrl => '$baseDomain/api/v1';
 
   /// Socket.IO connects to the bare domain (not the /api/v1 REST prefix).
@@ -113,4 +103,3 @@ class BookingEndpoints {
   String cancleBooking(String bookingId) => '${ApiConstants.baseUrl}/booking/$bookingId';
   String placeOrder = '${ApiConstants.baseUrl}/orders';
 }
-

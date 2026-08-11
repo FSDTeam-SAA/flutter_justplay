@@ -65,148 +65,164 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
 
             final formattedDate = DateFormat('EEEE d MMMM').format(date);
             final timeDisplay = timeSlot.replaceAll('\n', ' ').trim();
-            final isPending = (bookingStatus.value ?? '').toLowerCase() == 'pending';
+            final isPending =
+                (bookingStatus.value ?? '').toLowerCase() == 'pending';
 
-            return Column(
-              children: [
-                Text(
-                  isPending ? 'booking_pending_confirmation'.tr : 'booking_confirmed'.tr,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: isPending ? 24 : 30, fontWeight: FontWeight.w700),
-                ),
-                if (bookingRefId.value != null && bookingRefId.value!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+            return SingleChildScrollView(
+              child: Column(
+                children: [
                   Text(
-                    bookingRefId.value!,
-                    style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
-                  ),
-                ],
-                const SizedBox(height: 5),
-                Text(
-                  'please_pay_venue_on_arrival'.tr,
-                  style: TextStyle(
-                    fontSize: 16.5,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 25),
-
-                // Pitch Image Card with Yellow Border
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(
-                      color: const Color(0xFFE0E400),
-                      width: 4,
+                    isPending
+                        ? 'booking_pending_confirmation'.tr
+                        : 'booking_confirmed'.tr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isPending ? 24 : 30,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(26),
-                    child: Stack(
-                      children: [
-                        AppCachedImage(
-                          imageUrl: pitch.image.url,
-                          height: 220,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          icon: Icons.image_outlined,
-                          iconColor: Colors.grey.shade400,
-                        ),
-                        Positioned(
-                          bottom: 16,
-                          left: 20,
-                          child: Text(
-                            pitch.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22.4,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black, blurRadius: 10),
-                              ],
-                            ),
+                  if (bookingRefId.value != null &&
+                      bookingRefId.value!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      bookingRefId.value!,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 5),
+                  Text(
+                    'please_pay_venue_on_arrival'.tr,
+                    style: TextStyle(
+                      fontSize: 16.5,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+
+                  // Pitch Image Card with Yellow Border
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: const Color(0xFFE0E400),
+                        width: 4,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
+                      child: Stack(
+                        children: [
+                          AppCachedImage(
+                            imageUrl: pitch.image.url,
+                            height: 220,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            icon: Icons.image_outlined,
+                            iconColor: Colors.grey.shade400,
                           ),
-                        ),
-                        Positioned(
-                          bottom: 16,
-                          right: 20,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE0E400),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
+                          Positioned(
+                            bottom: 16,
+                            left: 20,
                             child: Text(
-                              '${pitch.price} ${pitch.currency}',
+                              pitch.name,
                               style: const TextStyle(
-                                fontSize: 16.12,
+                                color: Colors.white,
+                                fontSize: 22.4,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                shadows: [
+                                  Shadow(color: Colors.black, blurRadius: 10),
+                                ],
                               ),
                             ),
                           ),
+                          Positioned(
+                            bottom: 16,
+                            right: 20,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE0E400),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                '${pitch.price} ${pitch.currency}',
+                                style: const TextStyle(
+                                  fontSize: 16.12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // Date & Time Pill
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                        color: const Color(0xFFE0E400),
+                        width: 4,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$formattedDate  $timeDisplay',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Date & Time Pill
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                      color: const Color(0xFFE0E400),
-                      width: 4,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '$formattedDate  $timeDisplay',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
                       ),
                     ),
                   ),
-                ),
 
-                const Spacer(),
+                  // Fixed gap (not Spacer): this Column now sits inside a
+                  // SingleChildScrollView, which gives it unbounded height,
+                  // and Spacer needs a bounded one.
+                  const SizedBox(height: 40),
 
-                // Make Another Booking Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 70,
-                  child: ElevatedButton(
-                    onPressed: () => _resetAndNavigate(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(35),
+                  // Make Another Booking Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 70,
+                    child: ElevatedButton(
+                      onPressed: () => _resetAndNavigate(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(35),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      'make_another_booking'.tr,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      child: Text(
+                        'make_another_booking'.tr,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 20),
+                ],
+              ),
             );
           }),
         ),

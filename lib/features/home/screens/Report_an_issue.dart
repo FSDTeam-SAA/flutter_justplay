@@ -39,37 +39,41 @@ class _ReportAnIssueState extends State<ReportAnIssue> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 13,),
-          Center(child: Text('report_issue_lower'.tr, textAlign:TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),)),
-          SizedBox(height: 6,),
-          Text('please_state_the_issue_below'.tr, style: TextStyle(fontSize: 16.5, ),),
-          SizedBox(height: 12,),
-          TextFormField(
-            controller: _issueField,
-            maxLines: 20, // optional: good for reporting an issue
-            decoration: InputDecoration(
-              hintText: 'describe_your_issue'.tr,
-              contentPadding: const EdgeInsets.all(16),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4), // rectangle shape
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: Colors.grey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: Colors.black, width: 1.5),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 13,),
+            Center(child: Text('report_issue_lower'.tr, textAlign:TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),)),
+            SizedBox(height: 6,),
+            Text('please_state_the_issue_below'.tr, style: TextStyle(fontSize: 16.5, ),),
+            SizedBox(height: 12,),
+            TextFormField(
+              controller: _issueField,
+              maxLines: 20, // optional: good for reporting an issue
+              decoration: InputDecoration(
+                hintText: 'describe_your_issue'.tr,
+                contentPadding: const EdgeInsets.all(16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4), // rectangle shape
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  borderSide: const BorderSide(color: Colors.black, width: 1.5),
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 21,),
+            SizedBox(height: 21,),
 
-          Container(height: 61, child: SecondaryButton(text: 'submit'.tr,onApiPressed: () => _submit(),))
-        ],
+            Container(height: 61, child: SecondaryButton(text: 'submit'.tr,onApiPressed: () => _submit(),)),
+            SizedBox(height: 16,),
+          ],
+        ),
       ),
     );
   }

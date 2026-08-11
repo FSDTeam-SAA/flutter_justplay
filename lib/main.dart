@@ -13,7 +13,7 @@ import 'features/routing/router.dart';
 void main() async {
   await AppInitializer.initializeApp();
   await GetStorage.init();
-    await initializeDateFormatting();
+  await initializeDateFormatting();
   runApp(const MyApp());
 }
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Locale _getSavedLocale() {
     final box = GetStorage();
     final langCode = box.read('language_code') ?? 'en';
-    final countryCode = box.read('country_code') ;
+    final countryCode = box.read('country_code');
 
     return Locale(langCode, countryCode);
   }
@@ -31,14 +31,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp.router(
       debugShowCheckedModeBanner: false,
-      
+
       title: 'Just Play',
       theme: AppTheme.light,
 
       translations: AppTranslations(),
       locale: _getSavedLocale(),
       // locale: const Locale('en', 'US'), // Default locale
-      fallbackLocale: const Locale('en' ), // Fallback locale
+      fallbackLocale: const Locale('en'), // Fallback locale
+      // Translations may use RTL scripts (Arabic/Kurdish), but the product's
+      // layout is intentionally fixed left-to-right. Without this wrapper,
+      // changing the locale to Arabic reverses Rows, input hint alignment and
+      // control positions throughout every screen. Arabic glyph shaping and
+      // translation lookup continue to be handled by the selected locale.
+      builder: (context, child) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: child ?? const SizedBox.shrink(),
+      ),
 
       // Pass the GoRouter parts individually
       routeInformationProvider: router.routeInformationProvider,

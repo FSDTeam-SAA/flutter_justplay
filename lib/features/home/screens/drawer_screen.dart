@@ -92,92 +92,98 @@ class _MenuScreenState extends State<MenuScreen> {
       // Body with scrollable menu items
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 32),
-            // // Observe userInfo reactively
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 32),
+              // // Observe userInfo reactively
 
-            // Obx(() {
-            //   final userInfo = _profileController.userInfo.value;
-            //   final userName = userInfo?.user.name;
-            //   return Text(
-            //     'hello $userName',
-            //     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
-            //   );
-            // }),
-            Obx(() {
-              final userInfo = _profileController.userInfo.value;
-              final userName = userInfo?.user.name ?? '';
+              // Obx(() {
+              //   final userInfo = _profileController.userInfo.value;
+              //   final userName = userInfo?.user.name;
+              //   return Text(
+              //     'hello $userName',
+              //     style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+              //   );
+              // }),
+              Obx(() {
+                final userInfo = _profileController.userInfo.value;
+                final userName = userInfo?.user.name ?? '';
 
-              return Text(
-                'hello'.trParams({'name': userName}),
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              );
-            }),
-            SizedBox(height: 32),
-
-            _menuItem("bookings".tr, () {
-              Navigator.of(context).pop();
-              context.go('/bookings');
-            }),
-            _menuItem("change_city".tr, () {
-              Navigator.of(context).pop();
-              // push (not go): change_city is nested under the blank
-              // '/utility' shell route, so go() would leave that empty
-              // parent on the stack and the back button would land on it.
-              context.push('/utility/change_city');
-            }),
-            _menuItem("terms_and_conditions".tr, () {
-              Navigator.of(context).pop(); // Close menu
-              context.push('/utility/terms_condition');
-            }),
-
-            _menuItem("report_an_issue".tr, () {
-              Navigator.of(context).pop();
-              context.push('/utility/report_issue');
-            }),
-
-            // _menuItem("language".tr, () {
-            //   Navigator.of(context).pop();
-            //   context.go('/utility/language');
-            // }),
-            const Spacer(),
-
-            // Log Out Button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: GestureDetector(
-                onTap: () {
-                  _authController.logout(context);
-                },
-                child: Container(
-                  height: 92,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(color: Colors.black, width: 1),
+                return Text(
+                  'hello'.trParams({'name': userName}),
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
                   ),
-                  child: Center(
-                    child: Text(
-                      "log_out".tr,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                );
+              }),
+              SizedBox(height: 32),
+
+              _menuItem("bookings".tr, () {
+                Navigator.of(context).pop();
+                context.go('/bookings');
+              }),
+              _menuItem("change_city".tr, () {
+                Navigator.of(context).pop();
+                // push (not go): change_city is nested under the blank
+                // '/utility' shell route, so go() would leave that empty
+                // parent on the stack and the back button would land on it.
+                context.push('/utility/change_city');
+              }),
+              _menuItem("terms_and_conditions".tr, () {
+                Navigator.of(context).pop(); // Close menu
+                context.push('/utility/terms_condition');
+              }),
+
+              _menuItem("report_an_issue".tr, () {
+                Navigator.of(context).pop();
+                context.push('/utility/report_issue');
+              }),
+
+              // _menuItem("language".tr, () {
+              //   Navigator.of(context).pop();
+              //   context.go('/utility/language');
+              // }),
+              // Fixed gap (not Spacer): this Column now sits inside a
+              // SingleChildScrollView, which gives it unbounded height, and
+              // Spacer needs a bounded one.
+              const SizedBox(height: 40),
+
+              // Log Out Button
+              Padding(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: GestureDetector(
+                  onTap: () {
+                    _authController.logout(context);
+                  },
+                  child: Container(
+                    height: 92,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 22),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "log_out".tr,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),)
+              ),
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget _menuItem(String title, VoidCallback onTap) {
