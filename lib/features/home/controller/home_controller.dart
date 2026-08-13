@@ -5,7 +5,8 @@ import 'package:flutter_justplay/features/home/controller/profile_controller.dar
 import 'package:flutter_justplay/features/home/models/request/issue_request_model.dart';
 import 'package:flutter_justplay/features/home/models/request/reserve_booking_request_model.dart';
 import 'package:flutter_justplay/features/home/models/response/availability_response_model.dart';
-import 'package:flutter_justplay/features/home/models/response/booking%20_response_model.dart' as booking_model;
+import 'package:flutter_justplay/features/home/models/response/booking%20_response_model.dart'
+    as booking_model;
 import 'package:flutter_justplay/features/home/models/response/fetch_city_response_model.dart';
 import 'package:flutter_justplay/features/home/models/response/fetch_pitch_response_model.dart';
 import 'package:flutter_justplay/features/home/models/response/fetch_sport_response_model.dart';
@@ -25,7 +26,8 @@ class HomeController extends BaseController {
   final ProfileRepository _profileRepository = Get.find<ProfileRepository>();
   final AuthStorageService _authStorageService = AuthStorageService();
   final ProfileController _profileController = Get.find<ProfileController>();
-  final PlayerRealtimeService _realtimeService = Get.find<PlayerRealtimeService>();
+  final PlayerRealtimeService _realtimeService =
+      Get.find<PlayerRealtimeService>();
 
   final Rxn<FetchCityResponseModel> cities = Rxn<FetchCityResponseModel>();
   final Rxn<FetchSportResponseModel> sport = Rxn<FetchSportResponseModel>();
@@ -50,28 +52,33 @@ class HomeController extends BaseController {
     super.onInit();
     // Live updates: whenever an admin creates/edits/deletes a country, refresh
     // the list so city pickers reflect it instantly without navigation.
-    _cityChangedSub =
-        _realtimeService.cityChangedUpdates.listen((_) => _debouncedCityRefresh());
-    _cityDeletedSub =
-        _realtimeService.cityDeletedUpdates.listen((_) => _debouncedCityRefresh());
+    _cityChangedSub = _realtimeService.cityChangedUpdates.listen(
+      (_) => _debouncedCityRefresh(),
+    );
+    _cityDeletedSub = _realtimeService.cityDeletedUpdates.listen(
+      (_) => _debouncedCityRefresh(),
+    );
 
     // Same for sports.
-    _sportChangedSub =
-        _realtimeService.sportChangedUpdates.listen((_) => _debouncedSportRefresh());
-    _sportDeletedSub =
-        _realtimeService.sportDeletedUpdates.listen((_) => _debouncedSportRefresh());
+    _sportChangedSub = _realtimeService.sportChangedUpdates.listen(
+      (_) => _debouncedSportRefresh(),
+    );
+    _sportDeletedSub = _realtimeService.sportDeletedUpdates.listen(
+      (_) => _debouncedSportRefresh(),
+    );
   }
 
   void _debouncedCityRefresh() {
     _cityRefreshDebounce?.cancel();
-    _cityRefreshDebounce =
-        Timer(const Duration(milliseconds: 300), fetchCity);
+    _cityRefreshDebounce = Timer(const Duration(milliseconds: 300), fetchCity);
   }
 
   void _debouncedSportRefresh() {
     _sportRefreshDebounce?.cancel();
-    _sportRefreshDebounce =
-        Timer(const Duration(milliseconds: 300), fetchSport);
+    _sportRefreshDebounce = Timer(
+      const Duration(milliseconds: 300),
+      fetchSport,
+    );
   }
 
   @override
@@ -196,17 +203,21 @@ class HomeController extends BaseController {
     required String pitchId,
     required String date,
   }) async {
-    final result = await _homeRepo.getAvailability(pitchId: pitchId, date: date);
-    return result.fold(
-      (fail) {
-        setError(fail.message);
-        return null;
-      },
-      (success) => success.data,
+    final result = await _homeRepo.getAvailability(
+      pitchId: pitchId,
+      date: date,
     );
+    return result.fold((fail) {
+      setError(fail.message);
+      return null;
+    }, (success) => success.data);
   }
 
-  Future<bool> issue(String title, String description, [String? bookingId]) async {
+  Future<bool> issue(
+    String title,
+    String description, [
+    String? bookingId,
+  ]) async {
     final request = IssueRequestModel(
       title: title,
       description: description,
@@ -255,19 +266,18 @@ class HomeController extends BaseController {
 
     final result = await _homeRepo.reserveBooking(request);
 
-    return result.fold(
-      (fail) {
-        setError(fail.message);
-        Get.snackbar('Error', fail.message);
-        return null;
-      },
-      (success) => success.data.booking,
-    );
+    return result.fold((fail) {
+      setError(fail.message);
+      Get.snackbar('Error', fail.message);
+      return null;
+    }, (success) => success.data.booking);
   }
 
   /// Step 2: turns a held reservation into a real "Pending" booking. Fails
   /// with a clear message if the 5-minute hold already expired.
-  Future<booking_model.Booking?> confirmReservation(String reservationId) async {
+  Future<booking_model.Booking?> confirmReservation(
+    String reservationId,
+  ) async {
     final result = await _homeRepo.confirmReservedBooking(reservationId);
 
     return result.fold(
@@ -287,7 +297,11 @@ class HomeController extends BaseController {
     );
   }
 
-  Future<void> changeCity(String city) async {
+  /// [navigateToMenu] is true for the drawer's dedicated "Change City"
+  /// screen, which should land back on the menu after confirming. Pass
+  /// false when persisting a first-time pick from mid-flow (e.g. the
+  /// booking wizard's city step) so the user isn't yanked out of it.
+  Future<void> changeCity(String city, {bool navigateToMenu = true}) async {
     _multiFormDataManager.addTextData("city", city);
     //_multiFormDataManager.addTextData("id", id);
 
@@ -302,7 +316,7 @@ class HomeController extends BaseController {
       (success) async {
         DPrint.log('Personal info: ${success.message}');
         await _profileController.fetchProfile(); // Update profile with new city
-        Get.to(() => MenuScreen());
+        if (navigateToMenu) Get.to(() => MenuScreen());
         _multiFormDataManager.clear();
       },
     );

@@ -12,6 +12,7 @@ import '../../../../core/realtime/player_realtime_service.dart';
 import '../../../../core/services/location_service.dart';
 // PitchesResponse & Pitch
 import '../controller/home_controller.dart';
+import '../controller/profile_controller.dart';
 import '../models/pitch_filters.dart';
 import '../models/response/availability_response_model.dart';
 import '../models/response/booking _response_model.dart' as booking_model;
@@ -28,7 +29,11 @@ class _TimeSlotOption {
   final String start; // e.g. "08:00"
   final String end; // e.g. "09:00"
 
-  const _TimeSlotOption({required this.label, required this.start, required this.end});
+  const _TimeSlotOption({
+    required this.label,
+    required this.start,
+    required this.end,
+  });
 
   String get value => '$start - $end';
 
@@ -52,12 +57,31 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   final HomeController homeController = Get.find<HomeController>();
-  final PlayerRealtimeService _realtimeService = Get.find<PlayerRealtimeService>();
+  final PlayerRealtimeService _realtimeService =
+      Get.find<PlayerRealtimeService>();
   final LocationService _locationService = LocationService();
+  final ProfileController _profileController = Get.find<ProfileController>();
 
   StreamSubscription<Map<String, dynamic>>? _pitchChangedSub;
   StreamSubscription<String>? _pitchDeletedSub;
   Timer? _countdownTimer;
+
+  // City only needs to be picked once — after that it's read from the
+  // user's profile (kept in sync by the "Change City" screen in the burger
+  // menu) and this step is skipped, straight to Sport.
+  void _maybeSkipCityStep() {
+    if (selectedCity.value != null) return; // already picked this session
+    final savedCityName = _profileController.userInfo.value?.user.city;
+    if (savedCityName == null || savedCityName.isEmpty) return;
+
+    final cities = homeController.cities.value?.cities ?? [];
+    final match = cities.where((c) => c.name == savedCityName);
+    if (match.isEmpty) return;
+
+    selectedCity.value = match.first;
+    homeController.fetchSport();
+    currentStep.value = 1;
+  }
 
   Future<void> _submit() async {
     if (selectedDate.value == null || selectedTimeSlot.value == null) return;
@@ -196,7 +220,9 @@ class _BookingScreenState extends State<BookingScreen> {
     super.initState();
     // Fetch cities when screen opens
     if (homeController.cities.value == null) {
-      homeController.fetchCity();
+      homeController.fetchCity().then((_) => _maybeSkipCityStep());
+    } else {
+      _maybeSkipCityStep();
     }
     homeController.fetchPublicSettings();
 
@@ -269,7 +295,8 @@ class _BookingScreenState extends State<BookingScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => PitchFilterSheet(initial: filters.value, hasLocation: hasLocation),
+      builder: (_) =>
+          PitchFilterSheet(initial: filters.value, hasLocation: hasLocation),
     );
 
     if (result != null) {
@@ -303,7 +330,9 @@ class _BookingScreenState extends State<BookingScreen> {
         : '';
     if (data.closedDates.contains(dateKey)) return 'pitch_closed_today'.tr;
 
-    final jsWeekday = selectedDate.value != null ? selectedDate.value!.weekday % 7 : -1;
+    final jsWeekday = selectedDate.value != null
+        ? selectedDate.value!.weekday % 7
+        : -1;
     final dayConfig = data.openingHours.where((h) => h.dayOfWeek == jsWeekday);
     if (dayConfig.isEmpty || !dayConfig.first.enabled) {
       return 'pitch_closed'.tr;
@@ -316,7 +345,8 @@ class _BookingScreenState extends State<BookingScreen> {
     }
 
     final booked = data.bookedSlots.any((b) => b.timeSlot == slot.value);
-    if (booked) return 'booking_details_not_found'.tr; // generic "taken" fallback
+    if (booked)
+      return 'booking_details_not_found'.tr; // generic "taken" fallback
 
     return null;
   }
@@ -415,7 +445,12 @@ class _BookingScreenState extends State<BookingScreen> {
                     final isActive = currentStep.value >= i;
                     return Expanded(
                       child: GestureDetector(
-                        onTap: currentStep.value >= i
+                        // City (i == 0) is never tappable here — once
+                        // picked it can only be changed from the burger
+                        // menu's "Change City" screen.
+                        onTap: i == 0
+                            ? null
+                            : currentStep.value >= i
                             ? () => currentStep.value = i
                             : null,
                         child: Container(
@@ -488,6 +523,16 @@ class _BookingScreenState extends State<BookingScreen> {
                                       homeController
                                           .fetchSport(); // Fetch sports
                                       currentStep.value = 1;
+                                      // Persist to the profile so this
+                                      // one-time pick sticks for future
+                                      // sessions too (see _maybeSkipCityStep).
+                                      // navigateToMenu: false — stay in the
+                                      // booking flow instead of being sent
+                                      // to the drawer menu.
+                                      homeController.changeCity(
+                                        city.name,
+                                        navigateToMenu: false,
+                                      );
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.only(bottom: 20),
@@ -636,12 +681,16 @@ class _BookingScreenState extends State<BookingScreen> {
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: isLocating.value ? null : _useMyLocation,
+                                onPressed: isLocating.value
+                                    ? null
+                                    : _useMyLocation,
                                 icon: isLocating.value
                                     ? const SizedBox(
                                         width: 14,
                                         height: 14,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                       )
                                     : const Icon(Icons.my_location, size: 18),
                                 label: Text(
@@ -689,17 +738,23 @@ class _BookingScreenState extends State<BookingScreen> {
                                     child: Opacity(
                                       opacity: bookable ? 1 : 0.5,
                                       child: Container(
-                                        margin: const EdgeInsets.only(bottom: 16),
+                                        margin: const EdgeInsets.only(
+                                          bottom: 16,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(50),
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
                                           border: Border.all(
                                             color: const Color(0xFFE0E400),
                                             width: 3,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.08),
+                                              color: Colors.black.withOpacity(
+                                                0.08,
+                                              ),
                                               blurRadius: 12,
                                               offset: const Offset(0, 6),
                                             ),
@@ -713,42 +768,55 @@ class _BookingScreenState extends State<BookingScreen> {
                                                 children: [
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Flexible(
                                                         child: Text(
                                                           pitch.name,
-                                                          style: const TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight: FontWeight.w700,
-                                                          ),
-                                                          textAlign: TextAlign.center,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              ),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
                                                       ),
                                                       if (!bookable) ...[
-                                                        const SizedBox(width: 8),
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
                                                         Container(
-                                                          padding: const EdgeInsets
-                                                              .symmetric(
-                                                            horizontal: 8,
-                                                            vertical: 3,
-                                                          ),
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 8,
+                                                                vertical: 3,
+                                                              ),
                                                           decoration: BoxDecoration(
-                                                            color: Colors.red[100],
+                                                            color:
+                                                                Colors.red[100],
                                                             borderRadius:
                                                                 BorderRadius.circular(
-                                                                    20),
+                                                                  20,
+                                                                ),
                                                           ),
                                                           child: Text(
-                                                            pitch.status != 'active'
-                                                                ? 'pitch_closed'.tr
+                                                            pitch.status !=
+                                                                    'active'
+                                                                ? 'pitch_closed'
+                                                                      .tr
                                                                 : 'not_accepting_bookings'
-                                                                    .tr,
+                                                                      .tr,
                                                             style: TextStyle(
                                                               fontSize: 11,
-                                                              color: Colors.red[800],
+                                                              color: Colors
+                                                                  .red[800],
                                                               fontWeight:
-                                                                  FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                         ),
@@ -759,29 +827,41 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   Row(
                                                     children: [
                                                       const Icon(
-                                                        Icons.location_on_outlined,
+                                                        Icons
+                                                            .location_on_outlined,
                                                       ),
                                                       const SizedBox(width: 8),
                                                       Expanded(
-                                                        child: Text(pitch.location),
+                                                        child: Text(
+                                                          pitch.location,
+                                                        ),
                                                       ),
-                                                      if (pitch.distanceKm != null) ...[
+                                                      if (pitch.distanceKm !=
+                                                          null) ...[
                                                         Text(
                                                           'km_away'.trParams({
-                                                            'km': pitch.distanceKm!
-                                                                .toStringAsFixed(1),
+                                                            'km': pitch
+                                                                .distanceKm!
+                                                                .toStringAsFixed(
+                                                                  1,
+                                                                ),
                                                           }),
-                                                          style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors.grey,
-                                                          ),
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 12,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
                                                         ),
-                                                        const SizedBox(width: 8),
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
                                                       ],
                                                       Text(
                                                         '${pitch.price} ${pitch.currency}',
                                                         style: const TextStyle(
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
@@ -796,9 +876,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                               fit: BoxFit.cover,
                                               icon: Icons.image_outlined,
                                               iconColor: Colors.grey.shade400,
-                                              borderRadius: const BorderRadius.vertical(
-                                                bottom: Radius.circular(42),
-                                              ),
+                                              borderRadius:
+                                                  const BorderRadius.vertical(
+                                                    bottom: Radius.circular(42),
+                                                  ),
                                             ),
                                           ],
                                         ),
@@ -818,15 +899,22 @@ class _BookingScreenState extends State<BookingScreen> {
                     final pitch = selectedPitch.value!;
                     final currentLocale = Get.locale?.languageCode ?? 'en';
 
-                    final dateFormatLocale = currentLocale == 'ku' ? 'ar' : currentLocale;
+                    final dateFormatLocale = currentLocale == 'ku'
+                        ? 'ar'
+                        : currentLocale;
 
                     final dateStr = selectedDate.value != null
-                        ? DateFormat('EEEE d MMMM', dateFormatLocale)
-                            .format(selectedDate.value!)
+                        ? DateFormat(
+                            'EEEE d MMMM',
+                            dateFormatLocale,
+                          ).format(selectedDate.value!)
                         : '';
 
                     final timeStr =
-                        selectedTimeSlot.value?.label.replaceAll('\n', ' ').trim() ?? '';
+                        selectedTimeSlot.value?.label
+                            .replaceAll('\n', ' ')
+                            .trim() ??
+                        '';
 
                     final minutes = secondsRemaining.value ~/ 60;
                     final seconds = secondsRemaining.value % 60;
@@ -839,12 +927,17 @@ class _BookingScreenState extends State<BookingScreen> {
                         children: [
                           Text(
                             'confirm_booking'.tr,
-                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                           const SizedBox(height: 10),
                           Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: secondsRemaining.value <= 30
                                   ? Colors.red[50]
@@ -857,7 +950,9 @@ class _BookingScreenState extends State<BookingScreen> {
                               ),
                             ),
                             child: Text(
-                              'reservation_expires_in'.trParams({'time': countdownStr}),
+                              'reservation_expires_in'.trParams({
+                                'time': countdownStr,
+                              }),
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: secondsRemaining.value <= 30
@@ -897,7 +992,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                         shadows: [
-                                          Shadow(blurRadius: 10, color: Colors.black),
+                                          Shadow(
+                                            blurRadius: 10,
+                                            color: Colors.black,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -913,7 +1011,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                       ),
                                       child: Text(
                                         '${pitch.price} ${pitch.currency}',
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -935,19 +1035,27 @@ class _BookingScreenState extends State<BookingScreen> {
                             child: Text(
                               '$dateStr  $timeStr',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           if (homeController.publicSettings.value != null) ...[
                             const SizedBox(height: 12),
                             Text(
                               'cancellation_window_notice'.trParams({
-                                'hours': homeController.publicSettings.value!
+                                'hours': homeController
+                                    .publicSettings
+                                    .value!
                                     .cancellationWindowHours
                                     .toStringAsFixed(0),
                               }),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
                             ),
                           ],
                           const Spacer(),
@@ -961,8 +1069,12 @@ class _BookingScreenState extends State<BookingScreen> {
                             child: Text('back_to_bookings'.tr),
                           ),
                           SecondaryButton(
-                            text: isSubmitting.value ? '...' : 'confirm_booking'.tr,
-                            onSimplePressed: isSubmitting.value ? () {} : _confirmReservation,
+                            text: isSubmitting.value
+                                ? '...'
+                                : 'confirm_booking'.tr,
+                            onSimplePressed: isSubmitting.value
+                                ? () {}
+                                : _confirmReservation,
                           ),
                           const SizedBox(height: 20),
                         ],
@@ -981,13 +1093,19 @@ class _BookingScreenState extends State<BookingScreen> {
                             Center(
                               child: Text(
                                 'time_and_date'.tr,
-                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 20),
                             Text(
                               'select_date'.tr,
-                              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 10),
                             // Matches the pill's own height (60, see
@@ -1003,12 +1121,19 @@ class _BookingScreenState extends State<BookingScreen> {
                                 itemCount: dateOptions.length,
                                 itemBuilder: (context, i) {
                                   final date = dateOptions[i];
-                                  final currentLocale = Get.locale?.languageCode ?? 'en';
-                                  final dateFormatLocale =
-                                      currentLocale == 'ku' ? 'ar' : currentLocale;
+                                  final currentLocale =
+                                      Get.locale?.languageCode ?? 'en';
+                                  final dateFormatLocale = currentLocale == 'ku'
+                                      ? 'ar'
+                                      : currentLocale;
 
-                                  final isSelected = selectedDate.value != null &&
-                                      DateTime(date.year, date.month, date.day) ==
+                                  final isSelected =
+                                      selectedDate.value != null &&
+                                      DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                          ) ==
                                           DateTime(
                                             selectedDate.value!.year,
                                             selectedDate.value!.month,
@@ -1016,10 +1141,15 @@ class _BookingScreenState extends State<BookingScreen> {
                                           );
                                   final label = i == 0
                                       ? 'today'.tr
-                                      : DateFormat('EEE', dateFormatLocale).format(date);
+                                      : DateFormat(
+                                          'EEE',
+                                          dateFormatLocale,
+                                        ).format(date);
 
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
                                     child: _buildPill(
                                       text: '$label\n${date.day}',
                                       isSelected: isSelected,
@@ -1037,58 +1167,86 @@ class _BookingScreenState extends State<BookingScreen> {
                             const SizedBox(height: 30),
                             Text(
                               'select_time'.tr,
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
                       ),
                       if (selectedDate.value == null)
-                        Expanded(
-                          child: Center(child: Text('select_date'.tr)),
-                        )
+                        Expanded(child: Center(child: Text('select_date'.tr)))
                       else if (isLoadingAvailability.value)
                         const Expanded(
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      else if (availability.value != null && !availability.value!.isPitchBookable)
+                      else if (availability.value != null &&
+                          !availability.value!.isPitchBookable)
                         Expanded(
-                          child: Center(child: Text('pitch_unavailable_now'.tr)),
+                          child: Center(
+                            child: Text('pitch_unavailable_now'.tr),
+                          ),
                         )
                       else if (availability.value != null &&
                           availability.value!.closedDates.contains(
-                            DateFormat('yyyy-MM-dd').format(selectedDate.value!),
+                            DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(selectedDate.value!),
                           ))
                         Expanded(
                           child: Center(child: Text('pitch_closed_today'.tr)),
                         )
                       else
                         Expanded(
-                          child: SingleChildScrollView(
-                            child: Wrap(
-                              spacing: 16,
-                              runSpacing: 16,
-                              alignment: WrapAlignment.center,
-                              children: timeSlots.map((slot) {
-                                final unavailableReason = _slotUnavailableReason(slot);
-                                final isBooked = unavailableReason != null;
-                                return _buildPill(
-                                  text: slot.label,
-                                  isSelected: selectedTimeSlot.value?.value == slot.value,
-                                  onTap: isBooked
-                                      ? null
-                                      : () => selectedTimeSlot.value = slot,
-                                  isBooked: isBooked,
-                                );
-                              }).toList(),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFE0E400),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  alignment: WrapAlignment.center,
+                                  children: timeSlots.map((slot) {
+                                    final unavailableReason =
+                                        _slotUnavailableReason(slot);
+                                    final isBooked = unavailableReason != null;
+                                    return _buildPill(
+                                      text: slot.label,
+                                      isSelected:
+                                          selectedTimeSlot.value?.value ==
+                                          slot.value,
+                                      onTap: isBooked
+                                          ? null
+                                          : () => selectedTimeSlot.value = slot,
+                                      isBooked: isBooked,
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      if (selectedDate.value != null && selectedTimeSlot.value != null)
+                      if (selectedDate.value != null &&
+                          selectedTimeSlot.value != null)
                         Padding(
                           padding: const EdgeInsets.all(18),
                           child: SecondaryButton(
-                            text: isSubmitting.value ? '...' : 'review_booking'.tr,
-                            onSimplePressed: isSubmitting.value ? () {} : _submit,
+                            text: isSubmitting.value
+                                ? '...'
+                                : 'review_booking'.tr,
+                            onSimplePressed: isSubmitting.value
+                                ? () {}
+                                : _submit,
                           ),
                         ),
                     ],
