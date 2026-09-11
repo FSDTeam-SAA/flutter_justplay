@@ -364,15 +364,25 @@ class _BookingScreenState extends State<BookingScreen> {
     bool isBooked = false,
     bool isDatePill = false,
   }) {
+    final isUnavailableTimeSlot = isBooked && !isDatePill;
+    final backgroundColor = isSelected
+        ? const Color(0xFFE0E400)
+        : isUnavailableTimeSlot
+        ? const Color.fromARGB(255, 211, 210, 210)
+        : Colors.white;
+    final borderColor = isUnavailableTimeSlot
+        ? const Color(0xFFD6D6D6)
+        : const Color(0xFFE0E400);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: isDatePill ? 80 : 110,
         height: 60,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFE0E400) : Colors.white,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: const Color(0xFFE0E400), width: 1),
+          border: Border.all(color: borderColor, width: 1),
         ),
         child: Center(
           child: isDatePill
@@ -440,11 +450,12 @@ class _BookingScreenState extends State<BookingScreen> {
                   }
                 }
 
-                return Row(
-                  children: List.generate(4, (i) {
-                    final isActive = currentStep.value >= i;
-                    return Expanded(
-                      child: GestureDetector(
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(4, (i) {
+                      final isActive = currentStep.value >= i;
+                      return GestureDetector(
                         // City (i == 0) is never tappable here — once
                         // picked it can only be changed from the burger
                         // menu's "Change City" screen.
@@ -455,7 +466,10 @@ class _BookingScreenState extends State<BookingScreen> {
                             : null,
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: isActive ? Colors.black : Colors.white,
                             borderRadius: BorderRadius.circular(30),
@@ -467,17 +481,18 @@ class _BookingScreenState extends State<BookingScreen> {
                           child: Text(
                             getTabText(i),
                             textAlign: TextAlign.center,
+                            maxLines: 1,
+                            softWrap: false,
                             style: TextStyle(
                               color: isActive ? Colors.white : Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 13.5,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 );
               }),
             ),
