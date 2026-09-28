@@ -417,6 +417,20 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  Widget _buildFullHeightScrollView({required Widget child}) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(child: child),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -936,335 +950,345 @@ class _BookingScreenState extends State<BookingScreen> {
                     final countdownStr =
                         '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
 
-                    return Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Text(
-                            'confirm_booking'.tr,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: secondsRemaining.value <= 30
-                                  ? Colors.red[50]
-                                  : const Color(0xFFFFFDE0),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: secondsRemaining.value <= 30
-                                    ? Colors.red
-                                    : const Color(0xFFE0E400),
-                              ),
-                            ),
-                            child: Text(
-                              'reservation_expires_in'.trParams({
-                                'time': countdownStr,
-                              }),
+                    return _buildFullHeightScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Text(
+                              'confirm_booking'.tr,
                               style: TextStyle(
-                                fontWeight: FontWeight.w600,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
                                 color: secondsRemaining.value <= 30
-                                    ? Colors.red
-                                    : Colors.black,
+                                    ? Colors.red[50]
+                                    : const Color(0xFFFFFDE0),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: secondsRemaining.value <= 30
+                                      ? Colors.red
+                                      : const Color(0xFFE0E400),
+                                ),
+                              ),
+                              child: Text(
+                                'reservation_expires_in'.trParams({
+                                  'time': countdownStr,
+                                }),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: secondsRemaining.value <= 30
+                                      ? Colors.red
+                                      : Colors.black,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xFFE0E400),
-                                width: 4,
+                            const SizedBox(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFE0E400),
+                                  width: 4,
+                                ),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(26),
-                              child: Stack(
-                                children: [
-                                  AppCachedImage(
-                                    imageUrl: pitch.image.url,
-                                    height: 220,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    icon: Icons.image_outlined,
-                                    iconColor: Colors.grey.shade400,
-                                  ),
-                                  Positioned(
-                                    bottom: 16,
-                                    left: 16,
-                                    child: Text(
-                                      pitch.name,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 10,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(26),
+                                child: Stack(
+                                  children: [
+                                    AppCachedImage(
+                                      imageUrl: pitch.image.url,
+                                      height: 220,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      icon: Icons.image_outlined,
+                                      iconColor: Colors.grey.shade400,
                                     ),
-                                  ),
-                                  Positioned(
-                                    bottom: 16,
-                                    right: 16,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFE0E400),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
+                                    Positioned(
+                                      bottom: 16,
+                                      left: 16,
                                       child: Text(
-                                        '${pitch.price} ${pitch.currency}',
+                                        pitch.name,
                                         style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 28,
                                           fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10,
+                                              color: Colors.black,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Positioned(
+                                      bottom: 16,
+                                      right: 16,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFE0E400),
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${pitch.price} ${pitch.currency}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 30),
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xFFE0E400),
-                                width: 4,
+                            const SizedBox(height: 30),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFE0E400),
+                                  width: 4,
+                                ),
+                                borderRadius: BorderRadius.circular(50),
                               ),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              '$dateStr  $timeStr',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          if (homeController.publicSettings.value != null) ...[
-                            const SizedBox(height: 12),
-                            Text(
-                              'cancellation_window_notice'.trParams({
-                                'hours': homeController
-                                    .publicSettings
-                                    .value!
-                                    .cancellationWindowHours
-                                    .toStringAsFixed(0),
-                              }),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
+                              child: Text(
+                                '$dateStr  $timeStr',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
+                            if (homeController.publicSettings.value !=
+                                null) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                'cancellation_window_notice'.trParams({
+                                  'hours': homeController
+                                      .publicSettings
+                                      .value!
+                                      .cancellationWindowHours
+                                      .toStringAsFixed(0),
+                                }),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                            const Spacer(),
+                            TextButton(
+                              onPressed: isSubmitting.value
+                                  ? null
+                                  : () {
+                                      _countdownTimer?.cancel();
+                                      isReviewMode.value = false;
+                                    },
+                              child: Text('back_to_bookings'.tr),
+                            ),
+                            SecondaryButton(
+                              text: isSubmitting.value
+                                  ? '...'
+                                  : 'confirm_booking'.tr,
+                              onSimplePressed: isSubmitting.value
+                                  ? () {}
+                                  : _confirmReservation,
+                            ),
+                            const SizedBox(height: 20),
                           ],
-                          const Spacer(),
-                          TextButton(
-                            onPressed: isSubmitting.value
-                                ? null
-                                : () {
-                                    _countdownTimer?.cancel();
-                                    isReviewMode.value = false;
-                                  },
-                            child: Text('back_to_bookings'.tr),
-                          ),
-                          SecondaryButton(
-                            text: isSubmitting.value
-                                ? '...'
-                                : 'confirm_booking'.tr,
-                            onSimplePressed: isSubmitting.value
-                                ? () {}
-                                : _confirmReservation,
-                          ),
-                          const SizedBox(height: 20),
-                        ],
+                        ),
                       ),
                     );
                   }
 
                   // Normal time selection
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(18),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                'time_and_date'.tr,
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              'select_date'.tr,
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            // Matches the pill's own height (60, see
-                            // _buildPill) plus a little breathing room — a
-                            // horizontal ListView gives its items a *tight*
-                            // cross-axis constraint, so a taller SizedBox
-                            // here stretches the pill instead of leaving it
-                            // at its intended compact size.
-                            SizedBox(
-                              height: 100,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: dateOptions.length,
-                                itemBuilder: (context, i) {
-                                  final date = dateOptions[i];
-                                  final currentLocale =
-                                      Get.locale?.languageCode ?? 'en';
-                                  final dateFormatLocale = currentLocale == 'ku'
-                                      ? 'ar'
-                                      : currentLocale;
-
-                                  final isSelected =
-                                      selectedDate.value != null &&
-                                      DateTime(
-                                            date.year,
-                                            date.month,
-                                            date.day,
-                                          ) ==
-                                          DateTime(
-                                            selectedDate.value!.year,
-                                            selectedDate.value!.month,
-                                            selectedDate.value!.day,
-                                          );
-                                  final label = i == 0
-                                      ? 'today'.tr
-                                      : DateFormat(
-                                          'EEE',
-                                          dateFormatLocale,
-                                        ).format(date);
-
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: _buildPill(
-                                      text: '$label\n${date.day}',
-                                      isSelected: isSelected,
-                                      onTap: () {
-                                        selectedDate.value = date;
-                                        selectedTimeSlot.value = null;
-                                        _loadAvailability();
-                                      },
-                                      isDatePill: true,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 30),
-                            Text(
-                              'select_time'.tr,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (selectedDate.value == null)
-                        Expanded(child: Center(child: Text('select_date'.tr)))
-                      else if (isLoadingAvailability.value)
-                        const Expanded(
-                          child: Center(child: CircularProgressIndicator()),
-                        )
-                      else if (availability.value != null &&
-                          !availability.value!.isPitchBookable)
-                        Expanded(
-                          child: Center(
-                            child: Text('pitch_unavailable_now'.tr),
-                          ),
-                        )
-                      else if (availability.value != null &&
-                          availability.value!.closedDates.contains(
-                            DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(selectedDate.value!),
-                          ))
-                        Expanded(
-                          child: Center(child: Text('pitch_closed_today'.tr)),
-                        )
-                      else
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: const Color(0xFFE0E400),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: SingleChildScrollView(
-                                child: Wrap(
-                                  spacing: 16,
-                                  runSpacing: 16,
-                                  alignment: WrapAlignment.center,
-                                  children: timeSlots.map((slot) {
-                                    final unavailableReason =
-                                        _slotUnavailableReason(slot);
-                                    final isBooked = unavailableReason != null;
-                                    return _buildPill(
-                                      text: slot.label,
-                                      isSelected:
-                                          selectedTimeSlot.value?.value ==
-                                          slot.value,
-                                      onTap: isBooked
-                                          ? null
-                                          : () => selectedTimeSlot.value = slot,
-                                      isBooked: isBooked,
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (selectedDate.value != null &&
-                          selectedTimeSlot.value != null)
+                  return _buildFullHeightScrollView(
+                    child: Column(
+                      children: [
                         Padding(
                           padding: const EdgeInsets.all(18),
-                          child: SecondaryButton(
-                            text: isSubmitting.value
-                                ? '...'
-                                : 'review_booking'.tr,
-                            onSimplePressed: isSubmitting.value
-                                ? () {}
-                                : _submit,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'time_and_date'.tr,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                'select_date'.tr,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              // Matches the pill's own height (60, see
+                              // _buildPill) plus a little breathing room — a
+                              // horizontal ListView gives its items a *tight*
+                              // cross-axis constraint, so a taller SizedBox
+                              // here stretches the pill instead of leaving it
+                              // at its intended compact size.
+                              SizedBox(
+                                height: 100,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: dateOptions.length,
+                                  itemBuilder: (context, i) {
+                                    final date = dateOptions[i];
+                                    final currentLocale =
+                                        Get.locale?.languageCode ?? 'en';
+                                    final dateFormatLocale =
+                                        currentLocale == 'ku'
+                                        ? 'ar'
+                                        : currentLocale;
+
+                                    final isSelected =
+                                        selectedDate.value != null &&
+                                        DateTime(
+                                              date.year,
+                                              date.month,
+                                              date.day,
+                                            ) ==
+                                            DateTime(
+                                              selectedDate.value!.year,
+                                              selectedDate.value!.month,
+                                              selectedDate.value!.day,
+                                            );
+                                    final label = i == 0
+                                        ? 'today'.tr
+                                        : DateFormat(
+                                            'EEE',
+                                            dateFormatLocale,
+                                          ).format(date);
+
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      child: _buildPill(
+                                        text: '$label\n${date.day}',
+                                        isSelected: isSelected,
+                                        onTap: () {
+                                          selectedDate.value = date;
+                                          selectedTimeSlot.value = null;
+                                          _loadAvailability();
+                                        },
+                                        isDatePill: true,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Text(
+                                'select_time'.tr,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                    ],
+                        if (selectedDate.value == null)
+                          Expanded(child: Center(child: Text('select_date'.tr)))
+                        else if (isLoadingAvailability.value)
+                          const Expanded(
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else if (availability.value != null &&
+                            !availability.value!.isPitchBookable)
+                          Expanded(
+                            child: Center(
+                              child: Text('pitch_unavailable_now'.tr),
+                            ),
+                          )
+                        else if (availability.value != null &&
+                            availability.value!.closedDates.contains(
+                              DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(selectedDate.value!),
+                            ))
+                          Expanded(
+                            child: Center(child: Text('pitch_closed_today'.tr)),
+                          )
+                        else
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xFFE0E400),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: SingleChildScrollView(
+                                  child: Wrap(
+                                    spacing: 16,
+                                    runSpacing: 16,
+                                    alignment: WrapAlignment.center,
+                                    children: timeSlots.map((slot) {
+                                      final unavailableReason =
+                                          _slotUnavailableReason(slot);
+                                      final isBooked =
+                                          unavailableReason != null;
+                                      return _buildPill(
+                                        text: slot.label,
+                                        isSelected:
+                                            selectedTimeSlot.value?.value ==
+                                            slot.value,
+                                        onTap: isBooked
+                                            ? null
+                                            : () =>
+                                                  selectedTimeSlot.value = slot,
+                                        isBooked: isBooked,
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (selectedDate.value != null &&
+                            selectedTimeSlot.value != null)
+                          Padding(
+                            padding: const EdgeInsets.all(18),
+                            child: SecondaryButton(
+                              text: isSubmitting.value
+                                  ? '...'
+                                  : 'review_booking'.tr,
+                              onSimplePressed: isSubmitting.value
+                                  ? () {}
+                                  : _submit,
+                            ),
+                          ),
+                      ],
+                    ),
                   );
                 }
 
